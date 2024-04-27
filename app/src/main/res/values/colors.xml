@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="goldPrimary">#B99745</color>
+
+    <color name="typeCuentas">#AEDDF8</color>
+    <color name="typeSalud">#85F7A8</color>
+    <color name="typeOcio">#C5A69D</color>
+    <color name="typeOtros">#C4C4C4</color>
+    <color name="typeRopa">#FBD88B</color>
+    <color name="typeTransporte">#FF8E99</color>
+    <color name="typeVivienda">#E3A7FF</color>
+    <color name="typeAlimentacion">#FFFFB2</color>
+</resources>

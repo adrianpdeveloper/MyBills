@@ -1,0 +1,81 @@
+<resources>
+    <string name="app_name">MyBills</string>
+    <!-- AuthActivity -->
+    <string name="emailHint">E-mail</string>
+    <string name="passwordHint">Contraseña</string>
+    <string name="repeatPasswordHint">Repite la contraseña</string>
+    <string name="terminos_cb">Acepto los terminos y condiciones</string>
+    <string name="termsAndConditions">
+        Por favor, lee atentamente estos términos y condiciones antes de usar nuestra aplicación móvil.\n\n
+
+        1. Aceptación de los Términos y Condiciones:\n
+
+        Al registrarte y utilizar nuestra aplicación móvil, aceptas y te comprometes a cumplir estos términos y condiciones. Si no estás de acuerdo con alguno de estos términos, no podrás utilizar nuestra aplicación.\n\n
+
+        2. Uso de la Aplicación:\n
+
+        Nuestra aplicación está destinada para uso personal y no comercial. No podrás utilizar nuestra aplicación de ninguna manera que viole las leyes, reglamentos o derechos de terceros.\n\n
+
+        3. Privacidad:\n
+
+        Respetamos tu privacidad y estamos comprometidos a proteger tus datos personales. Nuestra política de privacidad explica cómo recopilamos, utilizamos y protegemos tus datos personales. Al utilizar nuestra aplicación, aceptas nuestras prácticas de privacidad.\n\n
+
+        4. Seguridad:\n
+
+        Implementamos medidas de seguridad para proteger tus datos personales contra accesos no autorizados, uso indebido o divulgación.\n
+
+        5. Propiedad Intelectual:\n
+
+        Todos los derechos de propiedad intelectual relacionados con nuestra aplicación y su contenido (incluyendo pero no limitado a código fuente, diseño, gráficos, etc.) son propiedad nuestra y están protegidos por las leyes de propiedad intelectual.\n\n
+
+        6. Limitación de Responsabilidad:\n
+
+        En ningún caso seremos responsables por daños directos, indirectos, incidentales, especiales o consecuentes que surjan del uso o la imposibilidad de utilizar nuestra aplicación.\n\n
+
+        7. Terminación del Servicio:\n
+
+        Nos reservamos el derecho de suspender o cancelar tu cuenta y el acceso a nuestra aplicación en caso de violación de estos términos y condiciones o por cualquier otra razón a nuestra discreción.\n\n
+
+        8. Modificaciones de los Términos y Condiciones:\n
+
+        Nos reservamos el derecho de modificar estos términos y condiciones en cualquier momento. Cualquier modificación será efectiva inmediatamente después de su publicación en nuestra aplicación. Te notificaremos sobre los cambios significativos a través de un aviso en nuestra aplicación.\n\n
+
+        9. Legislación Aplicable:\n
+
+        Estos términos y condiciones se regirán e interpretarán de acuerdo con las leyes del Estado de [Estado correspondiente], sin tener en cuenta sus disposiciones sobre conflictos de leyes.\n\n
+    </string>
+    <string name="resetPasswordMessage">Introduce tu e-mail, se enviara un enlace para resetear la contraseña.</string>
+    <string name="navigation_open_drawer">Abrir</string>
+    <string name="navigation_close_drawer">Cerrar</string>
+    <string name="signUp_btn">Registrarse</string>
+    <string name="signInText_tv">¿Ya tienes cuenta?</string>
+    <string name="signIn_tv">Inicia sesión.</string>
+    <string name="resetPassword_tv">¿Has olvidado tu contraseña?</string>
+    <string name="signIn_btn">Iniciar Sesión</string>
+    <string name="signUpText_tv">¿No tienes cuenta?</string>
+    <string name="signUp_tv">Registrate.</string>
+
+    <!-- HOME ACTIVITY -->
+    <array name="billTypeOptions">
+        <item>@string/billTypeOptions_Cuentas</item>
+        <item>@string/billTypeOptions_Alimentacion</item>
+        <item>@string/billTypeOptions_Vivienda</item>
+        <item>@string/billTypeOptions_Transporte</item>
+        <item>@string/billTypeOptions_Ropa</item>
+        <item>@string/billTypeOptions_Salud</item>
+        <item>@string/billTypeOptions_Ocio</item>
+        <item>@string/billTypeOptions_Otros</item>
+    </array>
+    <string name="billTypeOptions_Cuentas">Cuentas y pagos</string>
+    <string name="billTypeOptions_Alimentacion">Alimentación</string>
+    <string name="billTypeOptions_Vivienda">Vivienda</string>
+    <string name="billTypeOptions_Transporte">Transporte</string>
+    <string name="billTypeOptions_Ropa">Ropa</string>
+    <string name="billTypeOptions_Salud">Salud e higiene</string>
+    <string name="billTypeOptions_Ocio">Ocio</string>
+    <string name="billTypeOptions_Otros">Otros</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+</resources>
