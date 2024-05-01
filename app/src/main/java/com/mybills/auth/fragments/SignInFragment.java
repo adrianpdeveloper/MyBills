@@ -33,7 +33,6 @@ public class SignInFragment extends Fragment {
         // Required empty public constructor
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,27 +59,21 @@ public class SignInFragment extends Fragment {
 
     private void listeners() {
 
-        binding.signInBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                checkInputs();
-            }
-        });
+        binding.signInBtn.setOnClickListener(view -> checkInputs());
 
-
-        binding.emailEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
-                if (!binding.emailEt.getText().toString().isEmpty()) {
-                    if (!Patterns.EMAIL_ADDRESS.matcher(binding.emailEt.getText().toString()).matches() || binding.emailEt.getText().toString().equals("")) {
-                        binding.emailIl.setError("Introduce un email valido");
-                    }else{
-                        binding.emailIl.setError(null);
-                        binding.emailIl.setErrorEnabled(false);
-                    }
+        //Comprueba el formato
+        binding.emailEt.setOnFocusChangeListener((view, b) -> {
+            if (!binding.emailEt.getText().toString().isEmpty()) {
+                if (!Patterns.EMAIL_ADDRESS.matcher(binding.emailEt.getText().toString()).matches() || binding.emailEt.getText().toString().equals("")) {
+                    binding.emailIl.setError("Introduce un email valido");
+                }else{
+                    binding.emailIl.setError(null);
+                    binding.emailIl.setErrorEnabled(false);
                 }
             }
         });
+
+        //Comprueba el formato
         binding.passwordEt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -103,28 +96,13 @@ public class SignInFragment extends Fragment {
             }
         });
 
-        binding.signUpTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                authActivity.goToRegister();
-            }
-        });
+        binding.signUpTv.setOnClickListener(view -> authActivity.goToRegister());
 
-        binding.resetPasswordTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-            }
-        });
-
-        binding.resetPasswordTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                authActivity.resetPassword();
-            }
-        });
+        binding.resetPasswordTv.setOnClickListener(view -> authActivity.resetPassword());
     }
 
+    //Chekea que los campos estan correctamente rellenados.
     private void checkInputs() {
         if (binding.emailEt.getText().toString().isEmpty()){
             binding.emailIl.setError("Introduce un e-mail válido");

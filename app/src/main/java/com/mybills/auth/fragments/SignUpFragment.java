@@ -58,29 +58,24 @@ public class SignUpFragment extends Fragment {
     }
 
     private void listeners() {
-        binding.terminosCb.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (binding.terminosCb.isChecked()) {
-                    authActivity.terminosCondiciones();
+        binding.terminosCb.setOnClickListener(view -> {
+            if (binding.terminosCb.isChecked()) {
+                authActivity.terminosCondiciones();
+            }
+        });
+
+        binding.emailEt.setOnFocusChangeListener((view, b) -> {
+            if (!binding.emailEt.getText().toString().isEmpty()) {
+                if (!Patterns.EMAIL_ADDRESS.matcher(binding.emailEt.getText().toString()).matches() || binding.emailEt.getText().toString().isEmpty()) {
+                    binding.emailIl.setError("Introduce un email válido");
+                }else{
+                    binding.emailIl.setError(null);
+                    binding.emailIl.setErrorEnabled(false);
                 }
             }
         });
 
-        binding.emailEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
-                if (!binding.emailEt.getText().toString().isEmpty()) {
-                    if (!Patterns.EMAIL_ADDRESS.matcher(binding.emailEt.getText().toString()).matches() || binding.emailEt.getText().toString().isEmpty()) {
-                        binding.emailIl.setError("Introduce un email válido");
-                    }else{
-                        binding.emailIl.setError(null);
-                        binding.emailIl.setErrorEnabled(false);
-                    }
-                }
-            }
-        });
-
+        //Comprueba el formato
         binding.passwordEt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -103,6 +98,7 @@ public class SignUpFragment extends Fragment {
             }
         });
 
+        //Comprueba el formato
         binding.password2Et.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -125,23 +121,14 @@ public class SignUpFragment extends Fragment {
             }
         });
 
-        binding.signUpBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                checkInputs();
-            }
-        });
+        binding.signUpBtn.setOnClickListener(view -> checkInputs());
 
-        binding.signInTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                authActivity.goToSignin();
-            }
-        });
+        binding.signInTv.setOnClickListener(view -> authActivity.goToSignin());
 
 
     }
 
+    //Chekea que los campos estan correctamente rellenados.
     private void checkInputs() {
         Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
         Matcher passwordMatcher = pattern.matcher(binding.passwordEt.getText().toString());
@@ -158,7 +145,6 @@ public class SignUpFragment extends Fragment {
             authActivity.signUp(binding.emailEt.getText().toString(), binding.passwordEt.getText().toString());
         }
     }
-
 
 
     public void uncheckCheckBox() {

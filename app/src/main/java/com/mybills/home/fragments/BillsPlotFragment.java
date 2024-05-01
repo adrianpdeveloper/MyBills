@@ -37,10 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BillsPlotFragment extends Fragment {
-    public BillsPlotFragment() {
-        // Required empty public constructor
-    }
-
+    public BillsPlotFragment() {}
     FragmentBillsPlotBinding binding;
     FirestoreBills firestoreBills;
 
@@ -67,7 +64,7 @@ public class BillsPlotFragment extends Fragment {
         setup();
     }
 
-    private void setup() {
+    public void setup() {
         homeActivity = (HomeActivity) getActivity();
         pieChart = binding.billsPc;
         firestoreBills = new FirestoreBills();
@@ -84,7 +81,10 @@ public class BillsPlotFragment extends Fragment {
                 if (activity != null) {
                 SummaryFragment summaryFragment = (SummaryFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.homeActivityFrame);
                 if (summaryFragment != null) {
-                    summaryFragment.showPlot();
+                    if (total>0){
+                        summaryFragment.showPlot();
+                        Log.e("Muestra plot", "MUESTRA");
+                    }
                 }
             }}
         });
@@ -93,7 +93,9 @@ public class BillsPlotFragment extends Fragment {
 
     }
 
+    //Carga el grafico
     private void fillPlot(Map<String, Double> totalMap) {
+        pieChart.clear();
         for(Map.Entry<String, Double> entry: totalMap.entrySet()){
             Log.e("TIPO TOTAL", entry.toString());
 
@@ -145,6 +147,7 @@ public class BillsPlotFragment extends Fragment {
         }
     }
 
+    //Añade segmento al grafico
     private void addSegment(int colorId, String entryKey, Double entryValue ){
         SegmentFormatter sf = new SegmentFormatter(binding.getRoot().getContext().getColor(colorId));
         sf.getLabelPaint().setTextSize(36); // Tamaño de texto deseado para mostrar el dinero

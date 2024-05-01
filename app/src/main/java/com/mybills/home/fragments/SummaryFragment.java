@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.mybills.R;
 import com.mybills.databinding.FragmentSummaryBinding;
 import com.mybills.firebase.FirestoreBills;
 import com.mybills.home.HomeActivity;
@@ -59,50 +61,73 @@ public class SummaryFragment extends Fragment {
         setPlot();
     }
 
+    //Infla fragmento del gráfico
     public void setPlot() {
-        FrameLayout frameLayout= binding.plotFrame;
         billsPlotFragment = new BillsPlotFragment();
         getChildFragmentManager().beginTransaction()
                 .replace(binding.plotFrame.getId(), billsPlotFragment)
                 .commit();
     }
+
+    //Muestra el grafico
     public void showPlot() {
         binding.plotCardview.setVisibility(View.VISIBLE);
         binding.plotFrame.setVisibility(View.VISIBLE);
     }
 
 
+    //Adapter setup
     private void adapter(ArrayList<Bill> billArrayList) {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
-        BillAdapter adapter = new BillAdapter(billArrayList);
+        BillAdapter adapter = new BillAdapter(billArrayList, new BillAdapter.OnBillClickListener() {
+            @Override
+            public void onBillClick(Bill bill) {
+                homeActivity.showModifyBillAlert(bill);
+            }
+        });
 
         binding.billsRv.setAdapter(adapter);
         binding.billsRv.setLayoutManager(layoutManager);
+
     }
 
+    //Carga los ultimos 5 registros
     public void setBills() {
-
         firestoreBills.getBillsLast5(homeActivity.getUserId(), bills -> {
             Log.e("5 ultimas", bills.size()+"");
             adapter(bills);
-            binding.listCardview.setVisibility(View.VISIBLE);
+            if (!bills.isEmpty()){
+                binding.listCardview.setVisibility(View.VISIBLE);
+            }
+
             homeActivity.hideProgressBar();
+            if (binding.listCardview.getVisibility()==View.GONE && binding.plotCardview.getVisibility()==View.GONE){
+                homeActivity.showNoRegistry();
+            }
         });
+    }
+    public void refreshPlot() {
+        FragmentManager fragmentManager = getChildFragmentManager();
+        BillsPlotFragment billsPlotFragment = (BillsPlotFragment) fragmentManager.findFragmentById(R.id.plotFrame);
+
+        billsPlotFragment.setup();
+
     }
 
     private void setup() {
         homeActivity = (HomeActivity) getActivity();
         firestoreBills = new FirestoreBills();
 
+        homeActivity.hideNoRegistry();
+
         homeActivity.showProgressBar();
+
+
     }
     private void listeners(){
+        //Muestra la alert para crear gasto
         binding.addBillFab.setOnClickListener(view -> homeActivity.showAddBillAlert());
-        binding.seeMoreBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                homeActivity.goToBillList();
-            }
-        });
+        //Ir a la lista de bills
+        binding.seeMoreBtn.setOnClickListener(view -> homeActivity.goToBillList());
     }
 }

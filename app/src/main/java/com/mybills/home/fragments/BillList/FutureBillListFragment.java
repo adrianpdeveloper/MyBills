@@ -1,5 +1,6 @@
 package com.mybills.home.fragments.BillList;
 
+import android.app.FragmentManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -8,12 +9,14 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.mybills.R;
 import com.mybills.databinding.FragmentFutureBillListBinding;
+import com.mybills.databinding.FragmentTabBillListBinding;
 import com.mybills.firebase.FirestoreBills;
 import com.mybills.home.HomeActivity;
 import com.mybills.model.Bill;
@@ -27,7 +30,6 @@ public class FutureBillListFragment extends Fragment {
     FirestoreBills firestoreBills;
     private FragmentFutureBillListBinding binding;
 
-    private ArrayList<Bill> billArrayList;
 
     public FutureBillListFragment() {
         // Required empty public constructor
@@ -55,21 +57,30 @@ public class FutureBillListFragment extends Fragment {
 
     }
 
+    //Adapter setup
     private void adapter(ArrayList<Bill> billArrayList) {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
-        BillAdapter adapter = new BillAdapter(billArrayList);
+        BillAdapter adapter = new BillAdapter(billArrayList, new BillAdapter.OnBillClickListener() {
+            @Override
+            public void onBillClick(Bill bill) {
+                homeActivity.showModifyBillAlert(bill);
+                Log.e("Pulsado", "PULSADO");
+            }
+        });
+
 
         binding.billsRv.setAdapter(adapter);
         binding.billsRv.setLayoutManager(layoutManager);
     }
 
     public void setBills() {
-        firestoreBills.getFutureBills(homeActivity.getUserId(),new FirestoreBills.OnBillsLoadedListener() {
-            @Override
-            public void onBillsLoaded(ArrayList<Bill> bills) {
-                adapter(bills);
-                binding.billsRv.setVisibility(View.VISIBLE);
-                homeActivity.hideProgressBar();
+        //Carga gastos futuros
+        firestoreBills.getFutureBills(homeActivity.getUserId(), bills -> {
+            adapter(bills);
+            binding.billsRv.setVisibility(View.VISIBLE);
+            homeActivity.hideProgressBar();
+            if (bills.isEmpty()){
+                homeActivity.showNoRegistry();
             }
         });
 
@@ -78,6 +89,15 @@ public class FutureBillListFragment extends Fragment {
         homeActivity = (HomeActivity) getActivity();
         firestoreBills = new FirestoreBills();
 
+        homeActivity.hideNoRegistry();
+
         homeActivity.showProgressBar();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setup();
+        setBills();
     }
 }

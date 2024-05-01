@@ -15,11 +15,9 @@ public class MoneyInputFilter implements InputFilter {
 
     @Override
     public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-        // Check if the source contains a decimal separator
+        //Formatea los importes
         boolean hasDecimalSeparator = dest.toString().contains(",");
 
-        // If the source contains a decimal separator and it's being added after the allowed number of decimal digits,
-        // we don't allow the addition
         if (hasDecimalSeparator && dest.toString().substring(dest.toString().indexOf(",") + 1).length() >= decimal) {
             return "";
         }

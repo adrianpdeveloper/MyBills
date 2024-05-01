@@ -21,6 +21,8 @@ public class BillViewHolder extends RecyclerView.ViewHolder {
 
     private DateFormater dateFormater;
 
+
+
     public BillViewHolder(@NonNull BillListBinding binding) {
         super(binding.getRoot());
         this.binding = binding;
@@ -32,12 +34,13 @@ public class BillViewHolder extends RecyclerView.ViewHolder {
         binding.descripcionTv.setText(bill.getDescription());
         binding.typeTv.setText(bill.getType());
 
+        //Convierte a formato de dinero
         String formattedAmount = NumberFormat.getCurrencyInstance().format(bill.getAmount());
 
         binding.amountTv.setText(formattedAmount);
         binding.dateTv.setText(dateFormater.timestampToString(bill.getDate()));
-        ;
 
+        //Color del recycler view segun el tipo
         if (type.equals(binding.getRoot().getContext().getResources().getString(R.string.billTypeOptions_Cuentas))){
             binding.listBackground.setBackgroundColor((binding.getRoot().getContext().getColor(R.color.typeCuentas)));
         }
@@ -63,5 +66,8 @@ public class BillViewHolder extends RecyclerView.ViewHolder {
         if (type.equals(binding.getRoot().getContext().getResources().getString(R.string.billTypeOptions_Vivienda))){
             binding.listBackground.setBackgroundColor((binding.getRoot().getContext().getColor(R.color.typeVivienda)));
         }
+
+
+
     }
 }

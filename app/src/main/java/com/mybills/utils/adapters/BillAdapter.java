@@ -1,6 +1,7 @@
 package com.mybills.utils.adapters;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -18,8 +19,22 @@ public class BillAdapter extends RecyclerView.Adapter<BillViewHolder> {
 
     private BillListBinding binding;
 
+    private OnBillClickListener listener;
 
-    public BillAdapter(ArrayList<Bill> billArrayList) { this.items = billArrayList; }
+    public interface OnBillClickListener {
+        void onBillClick(Bill bill); // Replace "Bill" with your actual data type
+    }
+
+
+
+    public BillAdapter(ArrayList<Bill> billArrayList, OnBillClickListener onBillClickListener) {
+        this.items = billArrayList;
+        this.listener = onBillClickListener;
+    }
+
+    public BillAdapter(ArrayList<Bill> billArrayList) {
+        this.items = billArrayList;
+    }
 
 
     @NonNull
@@ -33,6 +48,14 @@ public class BillAdapter extends RecyclerView.Adapter<BillViewHolder> {
     public void onBindViewHolder(@NonNull BillViewHolder holder, int position) {
         holder.bind(items.get(position));
 
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (listener!=null){
+                    listener.onBillClick(items.get(holder.getAdapterPosition()));
+                }
+            }
+        });
     }
 
     @Override

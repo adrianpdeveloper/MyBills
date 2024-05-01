@@ -10,6 +10,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.mybills.model.Bill;
@@ -17,7 +18,7 @@ import com.mybills.model.Bill;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.Vector;
 
 
 public class FirestoreBills {
@@ -32,23 +33,24 @@ public class FirestoreBills {
 
     }
 
-
-
     public FirestoreBills() {
         this.db = FirebaseFirestore.getInstance();
     }
 
+    //Get Gastos semana actual
     public void getWeekBills(String userId, final OnBillsLoadedListener listener){
         db.collection("bills")
-                .whereGreaterThan("date", getMondayTimestamp())
+                .whereGreaterThan("date", getPreviousSundayTimestamp())
                 .whereLessThan("date",getTodayTimestamp())
                 .whereEqualTo("userId", userId)
+                .orderBy("date", Query.Direction.DESCENDING)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         ArrayList<Bill> billArrayList = new ArrayList<Bill>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Bill bill = document.toObject(Bill.class);
+                            bill.setBillId(document.getId());
                             Log.e("BILL TO STRING", bill.toString());
                             billArrayList.add(bill);
                         }
@@ -59,6 +61,7 @@ public class FirestoreBills {
                 });
     }
 
+    //Get Ultimos 5 registros añadidos
     public void getBillsLast5(String userId, final OnBillsLoadedListener listener){
         db.collection("bills")
                 .whereEqualTo("userId", userId)
@@ -69,6 +72,7 @@ public class FirestoreBills {
                         ArrayList<Bill> billArrayList = new ArrayList<Bill>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Bill bill = document.toObject(Bill.class);
+                            bill.setBillId(document.getId());
                             Log.e("BILL TO STRING", bill.toString());
                             billArrayList.add(bill);
                         }
@@ -79,16 +83,19 @@ public class FirestoreBills {
                 });
     }
 
+    //Get Gastos con fecha superior a la actual
     public void getFutureBills(String userId, final OnBillsLoadedListener listener){
         db.collection("bills")
                 .whereGreaterThan("date", getTodayTimestamp())
                 .whereEqualTo("userId", userId)
+                .orderBy("date", Query.Direction.DESCENDING)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         ArrayList<Bill> billArrayList = new ArrayList<Bill>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Bill bill = document.toObject(Bill.class);
+                            bill.setBillId(document.getId());
                             Log.e("BILL TO STRING", bill.toString());
                             billArrayList.add(bill);
                         }
@@ -99,17 +106,20 @@ public class FirestoreBills {
                 });
     }
 
+    //Get Gastos de el mes hasta la semana actual
     public void  getMonthExceptTodayWeek(String userId, final OnBillsLoadedListener listener) {
         db.collection("bills")
-                .whereGreaterThan("date",getFirstDayOfMonthTimestamp())
-                .whereLessThan("date", getMondayTimestamp())
+                .whereGreaterThan("date",getLastDayOfPreviousMonthTimestamp())
+                .whereLessThan("date", getPreviousSundayTimestamp())
                 .whereEqualTo("userId", userId)
+                .orderBy("date", Query.Direction.DESCENDING)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         ArrayList<Bill> billArrayList = new ArrayList<Bill>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Bill bill = document.toObject(Bill.class);
+                            bill.setBillId(document.getId());
                             Log.e("BILL TO STRING", bill.toString());
                             billArrayList.add(bill);
                         }
@@ -120,16 +130,19 @@ public class FirestoreBills {
                 });
     }
 
+    //Get Gastos hasta el mes actual
     public void  getBeforeMonthBills(String userId, final OnBillsLoadedListener listener) {
         db.collection("bills")
                 .whereLessThan("date", getFirstDayOfMonthTimestamp())
                 .whereEqualTo("userId", userId)
+                .orderBy("date", Query.Direction.DESCENDING)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         ArrayList<Bill> billArrayList = new ArrayList<Bill>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Bill bill = document.toObject(Bill.class);
+                            bill.setBillId(document.getId());
                             Log.e("BILL TO STRING", bill.toString());
                             billArrayList.add(bill);
                         }
@@ -140,14 +153,23 @@ public class FirestoreBills {
                 });
     }
 
+    //Put Gasto
     public Task<DocumentReference> putBill( Map<String, Object> bill ){
         return db.collection("bills")
                 .add(bill);
     }
 
+    //Update Gasto
+    public Task<Void> updateBill(Map<String, Object> bill, String billId ){
+        return db.collection("bills")
+                .document(billId)
+                .update(bill);
+    }
+
+    //Get Importes por tipo e Importe total
     public void getMonthAmount(String userId, final onBillsAmountLoaded onBillsAmountLoaded) {
         db.collection("bills")
-                .whereGreaterThan("date",getFirstDayOfMonthTimestamp())
+                .whereGreaterThan("date",getLastDayOfPreviousMonthTimestamp())
                 .whereLessThan("date",getLastDayOfMonthTimestamp())
                 .whereEqualTo("userId", userId)
                 .get()

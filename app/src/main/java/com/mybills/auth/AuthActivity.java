@@ -46,11 +46,13 @@ public class AuthActivity extends AppCompatActivity {
 
     private void setup() {
         mAuth = FirebaseAuth.getInstance();
+        //Si ya hay sesión va a la home
         if (mAuth.getCurrentUser()!=null){
             goToHome();
         }
     }
 
+    //Inicia sesión
     public void signIn(String email, String pass) {
         FirebaseAuth.getInstance().signInWithEmailAndPassword(email,pass)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -59,34 +61,34 @@ public class AuthActivity extends AppCompatActivity {
                         if (task.isSuccessful()){
                             goToHome();
                         }else {
-                            Log.e("ERROR SESION",task.getResult().toString());
                             Toast.makeText(AuthActivity.this, "E-mail o contraseña erroneos", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
     }
 
+    //Ir a la home
     private void goToHome() {
         startActivity(new Intent(AuthActivity.this, HomeActivity.class));
     }
 
+    //Registrar cuenta
     public void signUp(String email, String pass){
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email,pass)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()){
-                            goToHome();
-                        }else {
-                            if (task.getException() instanceof FirebaseAuthUserCollisionException){
-                                Toast.makeText(AuthActivity.this, "Ya existe una cuenta con este e-mail.", Toast.LENGTH_SHORT).show();
-                            }else  {
-                                Toast.makeText(AuthActivity.this, "Error de inicio de sesion.", Toast.LENGTH_SHORT).show();
-                            }
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()){
+                        goToHome();
+                    }else {
+                        if (task.getException() instanceof FirebaseAuthUserCollisionException){
+                            Toast.makeText(AuthActivity.this, "Ya existe una cuenta con este e-mail.", Toast.LENGTH_SHORT).show();
+                        }else  {
+                            Toast.makeText(AuthActivity.this, "Error de inicio de sesion.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
     }
+
+    //Infla el fragment de inicio de sesion.
     private void inflateFragment() {
         getSupportFragmentManager()
                 .beginTransaction()
@@ -95,6 +97,7 @@ public class AuthActivity extends AppCompatActivity {
                 .commitAllowingStateLoss();
     }
 
+    //Infla el fragment de registro.
     public void goToRegister() {
         getSupportFragmentManager()
                 .beginTransaction()
@@ -103,6 +106,7 @@ public class AuthActivity extends AppCompatActivity {
                 .commitAllowingStateLoss();
     }
 
+    //Infla el fragment de inicio de sesion.
     public void goToSignin() {
         getSupportFragmentManager()
                 .beginTransaction()
@@ -111,6 +115,7 @@ public class AuthActivity extends AppCompatActivity {
                 .commitAllowingStateLoss();
     }
 
+    //Muestra los terminos y condiciones
     public void terminosCondiciones() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this)
                 .setTitle("Términos y Condiciones de Uso.")
@@ -135,6 +140,8 @@ public class AuthActivity extends AppCompatActivity {
         alertDialog.show();
 
     }
+
+    //Funcion para recibir e-mail de recuperar contraseña
     public void resetPassword() {
         final TextInputEditText email_et = new TextInputEditText(this);
 
@@ -143,34 +150,25 @@ public class AuthActivity extends AppCompatActivity {
                 .setTitle("Cambiar contraseña.")
                 .setMessage(getResources().getString(R.string.resetPasswordMessage))
                 .setView(email_et)
-                .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Acción al hacer clic en el botón "Aceptar"
-                        if (!Patterns.EMAIL_ADDRESS.matcher(email_et.getText().toString()).matches() || email_et.getText().toString().isEmpty()){
-                            Toast.makeText(AuthActivity.this, "Introduce un e-mail válido.", Toast.LENGTH_SHORT).show();
-                        } else {
-                            mAuth.sendPasswordResetEmail(email_et.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()){
-                                        Toast.makeText(AuthActivity.this, "Se ha enviado un correo al e-mail proporcionado.", Toast.LENGTH_SHORT).show();
-                                        dialog.dismiss(); // Cierra el diálogo
-                                    }else {
-                                        Toast.makeText(AuthActivity.this, "No existe una cuenta con ese e-mail.", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
-
-                        }
+                .setPositiveButton("Aceptar", (dialog, which) -> {
+                    // Acción al hacer clic en el botón "Aceptar"
+                    if (!Patterns.EMAIL_ADDRESS.matcher(email_et.getText().toString()).matches() || email_et.getText().toString().isEmpty()){
+                        Toast.makeText(AuthActivity.this, "Introduce un e-mail válido.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        mAuth.sendPasswordResetEmail(email_et.getText().toString()).addOnCompleteListener(task -> {
+                            if (task.isSuccessful()){
+                                Toast.makeText(AuthActivity.this, "Se ha enviado un correo al e-mail proporcionado.", Toast.LENGTH_SHORT).show();
+                                dialog.dismiss(); // Cierra el diálogo
+                            }else {
+                                Toast.makeText(AuthActivity.this, "No existe una cuenta con ese e-mail.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
 
                     }
+
                 })
-                .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss(); // Cierra el diálogo
-                    }
+                .setNegativeButton("Cancelar", (dialogInterface, i) -> {
+                    dialogInterface.dismiss(); // Cierra el diálogo
                 });
 
         AlertDialog alertDialog = alertDialogBuilder.create();

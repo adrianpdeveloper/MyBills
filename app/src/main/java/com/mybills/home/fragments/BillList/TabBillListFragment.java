@@ -51,6 +51,7 @@ public class TabBillListFragment extends Fragment {
         viewPager();
     }
 
+    //ViewPager2 setup
     private void viewPager() {
         BillListAdapter adapter = new BillListAdapter(requireActivity());
         viewPager2 = binding.viewpager2;
@@ -69,4 +70,6 @@ public class TabBillListFragment extends Fragment {
             }
         }).attach();
     }
+
+
 }

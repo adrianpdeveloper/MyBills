@@ -6,7 +6,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".home.fragments.SummaryFragment"
     android:background="#EEEDEDED"
-
     >
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -17,6 +16,7 @@
             android:layout_marginHorizontal="12dp"
             android:layout_marginVertical="16dp"
             >
+
             <com.google.android.material.card.MaterialCardView
                 app:layout_constraintTop_toTopOf="parent"
                 android:id="@+id/plot_cardview"
@@ -26,7 +26,8 @@
                 app:strokeColor="#EAEAEA"
                 app:cardBackgroundColor="@color/white"
                 app:cardElevation="2dp"
-                app:cardCornerRadius="4dp">
+                app:cardCornerRadius="4dp"
+                android:visibility="gone">
                 <FrameLayout
                     android:id="@+id/plotFrame"
                     android:visibility="gone"
