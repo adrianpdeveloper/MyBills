@@ -5,8 +5,10 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,7 @@ import android.view.ViewGroup;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.mybills.databinding.FragmentTabBillListBinding;
+import com.mybills.home.HomeActivity;
 import com.mybills.home.fragments.BillList.adapter.BillListAdapter;
 
 public class TabBillListFragment extends Fragment {
@@ -22,6 +25,8 @@ public class TabBillListFragment extends Fragment {
 
     ViewPager2 viewPager2;
     TabLayout tabLayout;
+
+    HomeActivity homeActivity;
 
     public TabBillListFragment() {
         // Required empty public constructor
@@ -45,9 +50,16 @@ public class TabBillListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         setup();
+        listeners();
     }
 
-    private void setup() {
+    private void listeners() {
+        binding.addBillFab.setOnClickListener(view -> homeActivity.showAddBillAlert());
+    }
+
+    public void setup() {
+        homeActivity = (HomeActivity) getActivity();
+        homeActivity.hideNoRegistry();
         viewPager();
     }
 
@@ -69,6 +81,30 @@ public class TabBillListFragment extends Fragment {
                     break;
             }
         }).attach();
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                homeActivity.hideNoRegistry();
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+    }
+    public void setViewPagerPosition(int position){
+        viewPager2.setCurrentItem(position);
+    }
+
+    public int getViewPagerPosition(){
+        return viewPager2.getCurrentItem();
     }
 
 

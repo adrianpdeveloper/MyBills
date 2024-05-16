@@ -12,7 +12,20 @@
           "package_name": "com.mybills"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "28966169115-sbg2o8hgodrp6ndln8qqdnr44b9jtues.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mybills",
+            "certificate_hash": "098cc75e22262eac8ed16845c0e9df5683919d41"
+          }
+        },
+        {
+          "client_id": "28966169115-qutouqn2g0s5dqn636ju1m8v3ofjtajq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAUFg6_Dwi1RvSobXUlvqJVqO2LWLXZ-v8"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "28966169115-qutouqn2g0s5dqn636ju1m8v3ofjtajq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

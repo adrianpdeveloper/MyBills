@@ -83,6 +83,19 @@
         app:layout_constraintTop_toBottomOf="@+id/resetPassword_tv"
         android:layout_marginTop="20dp"
         />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/googleSignIn_btn"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="24dp"
+        android:backgroundTint="@color/white"
+        android:text="@string/signIn_btn"
+        android:textColor="@color/black"
+        app:layout_constraintTop_toBottomOf="@+id/signUp_tv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="20dp"
+        />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/signUpText_tv"

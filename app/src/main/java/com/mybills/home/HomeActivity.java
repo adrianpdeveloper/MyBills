@@ -2,8 +2,9 @@ package com.mybills.home;
 
 import static com.mybills.utils.DateFormater.*;
 
-import androidx.annotation.ColorInt;
-import androidx.annotation.ColorRes;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.IntentSenderRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -17,18 +18,18 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.PixelFormat;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.SpannableString;
@@ -46,45 +47,48 @@ import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.identity.BeginSignInRequest;
+import com.google.android.gms.auth.api.identity.Identity;
+import com.google.android.gms.auth.api.identity.SignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.datepicker.MaterialDatePicker;
-import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.mybills.R;
 import com.mybills.auth.AuthActivity;
 import com.mybills.databinding.ActivityHomeBinding;
-import com.mybills.home.fragments.BillList.FutureBillListFragment;
-import com.mybills.home.fragments.BillList.PastBillListFragment;
 import com.mybills.home.fragments.BillList.TabBillListFragment;
 import com.mybills.home.fragments.CalendarFragment;
+import com.mybills.home.fragments.ReportFragment;
 import com.mybills.home.fragments.SummaryFragment;
 import com.mybills.model.Bill;
 import com.mybills.utils.DateFormater;
 import com.mybills.utils.MoneyInputFilter;
 
-import java.text.NumberFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.mybills.firebase.FirestoreBills;
-import com.mybills.utils.adapters.BillAdapter;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
@@ -96,6 +100,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     ArrayList<Bill> billArrayList = new ArrayList<>();
     String[] typeOptions;
     FirestoreBills firestoreBills;
+    AuthActivity authActivity;
     ProgressBar progressBar;
 
     MoneyInputFilter decimalFilter = new MoneyInputFilter(2);
@@ -104,6 +109,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     Boolean amountReady;
 
     Boolean descriptionReady;
+
 
 
     @Override
@@ -119,6 +125,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private void setup() {
         mAuth = FirebaseAuth.getInstance();
         firestoreBills = new FirestoreBills();
+        authActivity = new AuthActivity();
 
         //TOOLBAR
         MaterialToolbar toolbar = binding.toolbar;
@@ -165,6 +172,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     .commitAllowingStateLoss();
         }
         if (item.getItemId()==R.id.nav_second){
+            hideNoRegistry();
             goToBillList();
         }
         if (item.getItemId()==R.id.nav_third){
@@ -172,10 +180,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             goToCalendar();
         }
         if (item.getItemId()==R.id.nav_fourth){
-            Toast.makeText(this, "PDF", Toast.LENGTH_SHORT).show();
+            goToReport();
         }
         if (item.getItemId()==R.id.nav_first_2){
-            mAuth.signOut();
             goToAuth();
 
         }
@@ -188,12 +195,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public void onPostCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
         super.onPostCreate(savedInstanceState, persistentState);
         toggle.syncState();
+
     }
 
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         toggle.onConfigurationChanged(newConfig);
+
     }
 
     @Override
@@ -206,7 +215,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     //Ir a activity de registro
     private void goToAuth() {
-        startActivity(new Intent(HomeActivity.this, AuthActivity.class));
+        startActivity(new Intent(HomeActivity.this, AuthActivity.class).putExtra("signOut",true));
     }
 
     //Infla fragment de resumen
@@ -253,11 +262,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         layoutParams.width = dialogWidthInPixels;
         alertDialog.getWindow().setAttributes(layoutParams);
     }
-    public void mostrarId(Bill bill) {
-        Toast toast = Toast.makeText(this, bill.getBillId(), Toast.LENGTH_LONG);
-        toast.show();
-    }
-
 
     //Muestra el alert de modificar gasto
     public void showModifyBillAlert(Bill bill) {
@@ -269,13 +273,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(HomeActivity.this);
         builder.setView(alertView);
 
-        TextInputEditText date_et = alertView.findViewById(R.id.date_et);
-        TextInputEditText amount_et = alertView.findViewById(R.id.amount_et);
-        TextInputEditText description_et = alertView.findViewById(R.id.descripcion_et);
-
-        date_et.setText(DateFormater.timestampToString(bill.getDate()));
-        amount_et.setText(bill.getAmount().toString());
-        description_et.setText(bill.getDescription());
 
 
         // Crear el AlertDialog
@@ -318,6 +315,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         MaterialButton aceptar_btn = alertView.findViewById(R.id.aceptar_btn);
         MaterialButton cancelar_btn = alertView.findViewById(R.id.cancelar_btn);
         MaterialCardView header_cv = alertView.findViewById(R.id.header_cv);
+        MaterialButton date_btn = alertView.findViewById(R.id.date_btn);
 
 
 
@@ -327,7 +325,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         //Si es modify setea los valores de los campos
         if (modify && newBill!=null){
-            date_et.setText(DateFormater.timestampToString(newBill.getDate()));
+            date_et.setText(DateFormater.timestampToStringShort(newBill.getDate()));
             amount_et.setText(newBill.getAmount().toString().replace("€","").replace(".",","));
             description_et.setText(newBill.getDescription());
             type_et.setText(newBill.getType());
@@ -431,7 +429,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         });
 
         //Llama al date picker
-        date_et.setOnClickListener(view -> showDatePicker());
+        date_btn.setOnClickListener(view -> showDatePicker());
 
 
         //Boton aceptar listener
@@ -478,7 +476,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 FragmentManager fragmentManager = getSupportFragmentManager();
 
                 //Vuelve a cargar las listas
-                refreshRecyclers(fragmentManager.findFragmentById(R.id.homeActivityFrame));
+                try {
+                    refreshRecyclers(fragmentManager.findFragmentById(R.id.homeActivityFrame), date_et.getText().toString());
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
             }
             if (!amountReady){
                 amount_il.setError("Importe no válido");
@@ -493,6 +495,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         //Opciones de tipo de gasto
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getResources().getStringArray(R.array.billTypeOptions));
         type_et.setAdapter(adapter);
+
         //Tipo de gasto listener
         type_et.addTextChangedListener(new TextWatcher() {
             @Override
@@ -535,19 +538,60 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
+        if (modify && newBill!=null){
+            MaterialButton delete_btn = alertView.findViewById(R.id.delete_btn);
+            delete_btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(alertView.getContext())
+                            .setTitle("Borrar Gasto")
+                            .setMessage(getResources().getString(R.string.delete_bill))
+                            .setPositiveButton("Aceptar", (dialog, which) -> {
+                                firestoreBills.deleteBill(newBill.getBillId());
+                                dialog.dismiss(); // Cierra el diálogo
+                                alertDialog.dismiss();
+                                FragmentManager fragmentManager = getSupportFragmentManager();
+
+                                //Vuelve a cargar las listas
+                                try {
+                                    refreshRecyclers(fragmentManager.findFragmentById(R.id.homeActivityFrame), date_et.getText().toString());
+                                } catch (ParseException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            })
+                            .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss(); // Cierra el diálogo
+                                }
+                            });
+
+                    android.app.AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.show();
+                }
+            });
+        }
     }
 
-    private void refreshRecyclers(Fragment fragment) {
+    private void refreshRecyclers(Fragment fragment, String date ) throws ParseException {
         if (fragment instanceof SummaryFragment){
             ((SummaryFragment) fragment).setBills();
             ((SummaryFragment) fragment).refreshPlot();
         }
-        if (fragment instanceof PastBillListFragment){
-            ((PastBillListFragment) fragment).setBills();
+        if (fragment instanceof TabBillListFragment){
+            int position = ((TabBillListFragment) fragment).getViewPagerPosition();
+            Log.e("POSITION",position+"");
+            ((TabBillListFragment) fragment).setup();
+            ((TabBillListFragment) fragment).setViewPagerPosition(position);
+
         }
-        if (fragment instanceof FutureBillListFragment){
-            ((FutureBillListFragment) fragment).setBills();
+        if (fragment instanceof CalendarFragment){
+            ((CalendarFragment) fragment).navToDay(date);
         }
+        if (fragment instanceof ReportFragment){
+            ((ReportFragment) fragment).refresh();
+        }
+
     }
 
     private void showDatePicker() {
@@ -571,8 +615,50 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         datePicker.show(getSupportFragmentManager(),"tag");
     }
 
+    public void askNotificationPermission() {
+        // This is only necessary for API level >= 33 (TIRAMISU)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
+                    PackageManager.PERMISSION_GRANTED
+            ) {
+//                Log.e(TAG, "PERMISSION_GRANTED")
+                // FCM SDK (and your app) can post notifications.
+            } else {
+//                Log.e(TAG, "NO_PERMISSION")
+                // Directly ask for the permission
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            }
+        }
+    }
 
+    private ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    // Permiso concedido, mostrar mensaje de éxito
+                    Toast.makeText(this, "Notifications permission granted", Toast.LENGTH_SHORT).show();
+                } else {
 
+                    android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(this)
+                            .setTitle("Permisos de notificaciones.")
+                            .setMessage("MyBills requiere de los permisos de notificaciones para poder utilizar todas las funcionalidades.")
+                            .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent settingsIntent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                            .putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
+                                    startActivity(settingsIntent);
+                                    dialog.dismiss();
+                                }
+                            })
+                            .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            });
+                }
+            });
 
     public void goToBillList(){
         showProgressBar();
@@ -587,6 +673,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(binding.homeActivityFrame.getId(), new CalendarFragment())
+                .addToBackStack(null)
+                .commitAllowingStateLoss();
+    }
+
+    public void goToReport(){
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(binding.homeActivityFrame.getId(), new ReportFragment())
                 .addToBackStack(null)
                 .commitAllowingStateLoss();
     }
@@ -619,6 +713,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public String getUserId(){
         return mAuth.getUid();
     }
+
+    public void minimizeApp() {moveTaskToBack(true);}
+
+
 
 
 }

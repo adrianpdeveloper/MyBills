@@ -69,4 +69,8 @@ public class BillAdapter extends RecyclerView.Adapter<BillViewHolder> {
         }
         return 0;
     }
+
+    public void clearData() {
+        items.clear();
+    }
 }

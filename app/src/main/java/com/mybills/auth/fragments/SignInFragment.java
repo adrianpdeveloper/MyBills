@@ -2,6 +2,7 @@ package com.mybills.auth.fragments;
 
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -55,7 +56,11 @@ public class SignInFragment extends Fragment {
 
     private void setup() {
         authActivity = (AuthActivity) getActivity();
+        binding.emailIl.setError(null);
+        binding.passwordIl.setError(null);
     }
+
+
 
     private void listeners() {
 
@@ -100,6 +105,21 @@ public class SignInFragment extends Fragment {
 
 
         binding.resetPasswordTv.setOnClickListener(view -> authActivity.resetPassword());
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+
+                authActivity.minimizeApp();
+            }
+        });
+
+        binding.googleSignInBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                authActivity.signIn();
+            }
+        });
     }
 
     //Chekea que los campos estan correctamente rellenados.

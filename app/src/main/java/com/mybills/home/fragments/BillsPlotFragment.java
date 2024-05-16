@@ -45,6 +45,8 @@ public class BillsPlotFragment extends Fragment {
 
     HomeActivity homeActivity;
 
+    double fivePercent;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,7 +75,7 @@ public class BillsPlotFragment extends Fragment {
         firestoreBills.getMonthAmount(homeActivity.getUserId(), new FirestoreBills.onBillsAmountLoaded() {
             @Override
             public void onBillsAmountLoaded(Map<String, Double> totalMap, Double total) {
-                fillPlot(totalMap);
+                fillPlot(totalMap, total);
                 String formattedAmount = NumberFormat.getCurrencyInstance().format(total);
                 binding.totalTv.setText(formattedAmount);
 
@@ -94,7 +96,9 @@ public class BillsPlotFragment extends Fragment {
     }
 
     //Carga el grafico
-    private void fillPlot(Map<String, Double> totalMap) {
+    private void fillPlot(Map<String, Double> totalMap, Double total) {
+        fivePercent = total * 0.05;
+
         pieChart.clear();
         for(Map.Entry<String, Double> entry: totalMap.entrySet()){
             Log.e("TIPO TOTAL", entry.toString());
@@ -102,36 +106,37 @@ public class BillsPlotFragment extends Fragment {
             if (entry.getValue()!=0) {
                 switch (entry.getKey()) {
                     case "Cuentas y pagos":
-                        addSegment(R.color.typeCuentas, entry.getKey(), entry.getValue());
-                        binding.legendCuentas.setVisibility(View.VISIBLE);
+                            addSegment(R.color.typeCuentas, entry.getKey(), entry.getValue());
+                            binding.legendCuentas.setVisibility(View.VISIBLE);
+
                         break;
                     case "Alimentación":
-                        addSegment(R.color.typeAlimentacion, entry.getKey(), entry.getValue());
-                        binding.legendAlimentacion.setVisibility(View.VISIBLE);
+                            addSegment(R.color.typeAlimentacion, entry.getKey(), entry.getValue());
+                            binding.legendAlimentacion.setVisibility(View.VISIBLE);
                         break;
                     case "Vivienda":
-                        addSegment(R.color.typeVivienda, entry.getKey(), entry.getValue());
-                        binding.legendVivienda.setVisibility(View.VISIBLE);
+                            addSegment(R.color.typeVivienda, entry.getKey(), entry.getValue());
+                            binding.legendVivienda.setVisibility(View.VISIBLE);
                         break;
                     case "Transporte":
-                        addSegment(R.color.typeTransporte, entry.getKey(), entry.getValue());
-                        binding.legendTransporte.setVisibility(View.VISIBLE);
+                            addSegment(R.color.typeTransporte, entry.getKey(), entry.getValue());
+                            binding.legendTransporte.setVisibility(View.VISIBLE);
                         break;
                     case "Ropa":
-                        addSegment(R.color.typeRopa, entry.getKey(), entry.getValue());
-                        binding.legendRopa.setVisibility(View.VISIBLE);
+                            addSegment(R.color.typeRopa, entry.getKey(), entry.getValue());
+                            binding.legendRopa.setVisibility(View.VISIBLE);
                         break;
                     case "Salud e higiene":
-                        addSegment(R.color.typeSalud, entry.getKey(), entry.getValue());
-                        binding.legendSalud.setVisibility(View.VISIBLE);
+                            addSegment(R.color.typeSalud, entry.getKey(), entry.getValue());
+                            binding.legendSalud.setVisibility(View.VISIBLE);
                         break;
                     case "Ocio":
-                        addSegment(R.color.typeOcio, entry.getKey(), entry.getValue());
-                        binding.legendOcio.setVisibility(View.VISIBLE);
+                            addSegment(R.color.typeOcio, entry.getKey(), entry.getValue());
+                            binding.legendOcio.setVisibility(View.VISIBLE);
                         break;
                     case "Otros":
-                        addSegment(R.color.typeOtros, entry.getKey(), entry.getValue());
-                        binding.legendOtros.setVisibility(View.VISIBLE);
+                            addSegment(R.color.typeOtros, entry.getKey(), entry.getValue());
+                            binding.legendOtros.setVisibility(View.VISIBLE);
                         break;
                     default:
                         // Por si acaso, si no coincide con ningún caso, puedes usar un color predeterminado
@@ -162,7 +167,14 @@ public class BillsPlotFragment extends Fragment {
 
         String formattedAmount = NumberFormat.getCurrencyInstance().format(entryValue);
 
-        Segment segment = new Segment(formattedAmount, entryValue);
+        Segment segment;
+
+        if (entryValue<fivePercent){
+            segment = new Segment(formattedAmount, fivePercent);
+        }else {
+             segment = new Segment(formattedAmount, entryValue);
+        }
+
 
         pieChart.addSegment(segment, sf);
     }

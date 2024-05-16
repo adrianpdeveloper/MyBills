@@ -1,15 +1,10 @@
 package com.mybills.utils.adapters;
 
-import android.view.View;
-
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.api.Context;
 import com.mybills.R;
 import com.mybills.databinding.BillListBinding;
-import com.mybills.home.HomeActivity;
 import com.mybills.model.Bill;
 import com.mybills.utils.DateFormater;
 
@@ -38,7 +33,7 @@ public class BillViewHolder extends RecyclerView.ViewHolder {
         String formattedAmount = NumberFormat.getCurrencyInstance().format(bill.getAmount());
 
         binding.amountTv.setText(formattedAmount);
-        binding.dateTv.setText(dateFormater.timestampToString(bill.getDate()));
+        binding.dateTv.setText(dateFormater.timestampToStringLong(bill.getDate()));
 
         //Color del recycler view segun el tipo
         if (type.equals(binding.getRoot().getContext().getResources().getString(R.string.billTypeOptions_Cuentas))){

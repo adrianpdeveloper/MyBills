@@ -3,6 +3,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="goldPrimary">#B99745</color>
+    <color name="danger">#FF0000</color>
+    <color name="greySecondary">#EEEDEDED</color>
 
     <color name="typeCuentas">#AEDDF8</color>
     <color name="typeSalud">#85F7A8</color>

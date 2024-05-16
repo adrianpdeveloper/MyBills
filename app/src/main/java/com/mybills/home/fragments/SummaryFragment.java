@@ -2,6 +2,7 @@ package com.mybills.home.fragments;
 
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -13,7 +14,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import com.mybills.R;
 import com.mybills.databinding.FragmentSummaryBinding;
@@ -129,5 +129,21 @@ public class SummaryFragment extends Fragment {
         binding.addBillFab.setOnClickListener(view -> homeActivity.showAddBillAlert());
         //Ir a la lista de bills
         binding.seeMoreBtn.setOnClickListener(view -> homeActivity.goToBillList());
+
+        binding.plotCardview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                homeActivity.goToReport();
+            }
+        });
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+
+                homeActivity.minimizeApp();
+            }
+        });
     }
+
 }

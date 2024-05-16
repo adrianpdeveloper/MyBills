@@ -66,6 +66,7 @@
         <item>@string/billTypeOptions_Ocio</item>
         <item>@string/billTypeOptions_Otros</item>
     </array>
+
     <string name="billTypeOptions_Cuentas">Cuentas y pagos</string>
     <string name="billTypeOptions_Alimentacion">Alimentación</string>
     <string name="billTypeOptions_Vivienda">Vivienda</string>
@@ -74,8 +75,75 @@
     <string name="billTypeOptions_Salud">Salud e higiene</string>
     <string name="billTypeOptions_Ocio">Ocio</string>
     <string name="billTypeOptions_Otros">Otros</string>
+
+    <array name="yearMonths">
+        <item>@string/month_january</item>
+        <item>@string/month_february</item>
+        <item>@string/month_march</item>
+        <item>@string/month_april</item>
+        <item>@string/month_may</item>
+        <item>@string/month_june</item>
+        <item>@string/month_july</item>
+        <item>@string/month_august</item>
+        <item>@string/month_september</item>
+        <item>@string/month_october</item>
+        <item>@string/month_november</item>
+        <item>@string/month_december</item>
+    </array>
+
+    <array name="years">
+        <item>@string/year_2015</item>
+        <item>@string/year_2016</item>
+        <item>@string/year_2017</item>
+        <item>@string/year_2018</item>
+        <item>@string/year_2019</item>
+        <item>@string/year_2020</item>
+        <item>@string/year_2021</item>
+        <item>@string/year_2022</item>
+        <item>@string/year_2023</item>
+        <item>@string/year_2024</item>
+        <item>@string/year_2025</item>
+        <item>@string/year_2026</item>
+        <item>@string/year_2027</item>
+        <item>@string/year_2028</item>
+        <item>@string/year_2029</item>
+        <item>@string/year_2030</item>
+    </array>
+
+    <string name="month_january">Enero</string>
+    <string name="month_february">Febrero</string>
+    <string name="month_march">Marzo</string>
+    <string name="month_april">Abril</string>
+    <string name="month_may">Mayo</string>
+    <string name="month_june">Junio</string>
+    <string name="month_july">Julio</string>
+    <string name="month_august">Agosto</string>
+    <string name="month_september">Septiembre</string>
+    <string name="month_october">Octubre</string>
+    <string name="month_november">Noviembre</string>
+    <string name="month_december">Diciembre</string>
+
+    <string name="year_2015">2015</string>
+    <string name="year_2016">2016</string>
+    <string name="year_2017">2017</string>
+    <string name="year_2018">2018</string>
+    <string name="year_2019">2019</string>
+    <string name="year_2020">2020</string>
+    <string name="year_2021">2021</string>
+    <string name="year_2022">2022</string>
+    <string name="year_2023">2023</string>
+    <string name="year_2024">2024</string>
+    <string name="year_2025">2025</string>
+    <string name="year_2026">2026</string>
+    <string name="year_2027">2027</string>
+    <string name="year_2028">2028</string>
+    <string name="year_2029">2029</string>
+    <string name="year_2030">2030</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="delete_bill">Se va a borrar permanentemente. ¿Continuar?</string>
+    <string name="default_web_client_id">1:28966169115:android:d0fb44e36431690ccce6be</string>
 
 
 </resources>

@@ -1,27 +1,31 @@
 package com.mybills.auth;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
-import android.view.View;
-import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.mybills.R;
 import com.mybills.auth.fragments.SignInFragment;
 import com.mybills.auth.fragments.SignUpFragment;
@@ -34,6 +38,11 @@ public class AuthActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
 
+    private ActivityResultLauncher<Intent> googleSignInLauncher;
+    private GoogleSignInOptions gso;
+
+    private GoogleSignInClient mGoogleSignInClient;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,11 +54,27 @@ public class AuthActivity extends AppCompatActivity {
     }
 
     private void setup() {
+        googleSignInSetup();
         mAuth = FirebaseAuth.getInstance();
+
+        Intent intent = getIntent();
+        if (intent!=null){
+            Log.d("LOGOUT","intent no nulo");
+            boolean receivedBoolean = intent.getBooleanExtra("signOut", false);
+            if (receivedBoolean){
+                Log.d("LOGOUT","singOut");
+                signOut();
+            }
+        }
+
+
+
         //Si ya hay sesión va a la home
         if (mAuth.getCurrentUser()!=null){
             goToHome();
         }
+
+
     }
 
     //Inicia sesión
@@ -176,6 +201,65 @@ public class AuthActivity extends AppCompatActivity {
 
     }
 
+    public void minimizeApp() {moveTaskToBack(true);}
+
+    public void signIn() {
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        googleSignInLauncher.launch(signInIntent);
+    }
+    public void signOut(){
+            mAuth.signOut();
+            mGoogleSignInClient.signOut();
+    }
+    public void googleSignInSetup(){
+        googleSignInLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+                        Intent data = result.getData();
+                        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                        handleSignInResult(task);
+                    } else {
+                        Log.w("GOOGLE SIGN IN", "Google sign in failed");
+                    }
+                });
+
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+    }
+
+    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        try {
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+            Log.d("GOOGLE SIGN IN", "firebaseAuthWithGoogle:" + account.getId());
+            firebaseAuthWithGoogle(account.getIdToken());
+        } catch (ApiException e) {
+            Log.w("GOOGLE SIGN IN", "Google sign in failed", e);
+        }
+    }
+
+    private void firebaseAuthWithGoogle(String idToken) {
+        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("GOOGLE SIGN IN", "signInWithCredential:success");
+                            Log.d("GOOGLE SIGN IN", "USER:" + mAuth.getCurrentUser().getEmail());
+                            goToHome();
+
+                        } else {
+                            Log.w("GOOGLE SIGN IN", "signInWithCredential:failure", task.getException());
+
+                        }
+                    }
+                });
+    }
 
 
 

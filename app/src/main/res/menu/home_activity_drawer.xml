@@ -18,7 +18,7 @@
         <item
             android:id="@+id/nav_fourth"
             android:icon="@drawable/baseline_calendar_today_24"
-            android:title="Item 1" />
+            android:title="Informes" />
     </group>
 
     <group android:id="@+id/group_2">

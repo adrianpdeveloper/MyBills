@@ -63,7 +63,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/date_il"
                         style="Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -71,36 +70,52 @@
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="20dp"
                         android:layout_marginTop="16dp"
-                        android:hint="Fecha"
-                        app:endIconDrawable="@drawable/baseline_calendar_today_24"
-                        app:endIconMode="custom"
-                        app:endIconTint="@color/black"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:paddingBottom="3dp"
+                        android:hint="Fecha">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/date_et"
-                            android:layout_width="150dp"
+                            android:layout_width="115dp"
                             android:layout_height="match_parent"
                             android:focusable="false"
                             android:focusableInTouchMode="false"
-                            android:text="Hoy" />
+                            android:text="Hoy"
+                            android:textSize="16sp"/>
 
                     </com.google.android.material.textfield.TextInputLayout>
 
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/date_btn"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:layout_constraintDimensionRatio="1:1"
+                        app:layout_constraintTop_toTopOf="@id/date_il"
+                        app:layout_constraintBottom_toBottomOf="@id/date_il"
+                        style="@style/Widget.Material3.Button.IconButton"
+                        app:icon="@drawable/round_calendar_today_24"
+                        app:iconGravity="textEnd"
+                        app:layout_constraintStart_toEndOf="@id/date_il"
+                        app:iconTint="@color/white"
+                        android:backgroundTint="@color/goldPrimary"
+                        app:cornerRadius="2dp"
+
+                        android:layout_marginTop="2dp"
+                        />
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/amount_il"
                         style="Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
                         android:hint="Importe"
                         app:endIconDrawable="@drawable/round_euro_24"
                         app:endIconMode="custom"
                         app:expandedHintEnabled="false"
-                        app:layout_constraintEnd_toEndOf="@id/descripcion_il"
-                        app:layout_constraintStart_toEndOf="@id/date_il"
-                        app:layout_constraintTop_toTopOf="@id/date_il"
+                        app:layout_constraintStart_toStartOf="@id/date_il"
+                        app:layout_constraintTop_toBottomOf="@id/date_il"
+                        app:layout_constraintEnd_toEndOf="@id/date_btn"
+                        android:layout_marginTop="12dp"
                         app:boxStrokeColor="@android:color/darker_gray"
                         app:hintTextColor="@android:color/darker_gray"
                         >
