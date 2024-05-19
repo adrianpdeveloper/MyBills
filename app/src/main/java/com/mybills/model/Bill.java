@@ -3,12 +3,24 @@ package com.mybills.model;
 import com.google.firebase.Timestamp;
 
 public class Bill {
+
+    //ID gasto
     String billId;
+
+    //Fecha
     Timestamp date;
+
+    //Importe
     Double amount;
+
+    //Tipo de gasto
     String type;
+
+    //Descripción
     String description;
 
+
+    //GETTERS AND SETTERS
     public Timestamp getDate() {
         return date;
     }
@@ -41,9 +53,6 @@ public class Bill {
         this.description = description;
     }
 
-    public Bill() {
-    }
-
     public String getBillId() {
         return billId;
     }
@@ -52,8 +61,18 @@ public class Bill {
         this.billId = billId;
     }
 
+    public Bill() {
+    }
+
     public Bill(String billId, Timestamp date, Double amount, String type, String description) {
         this.billId = billId;
+        this.date = date;
+        this.amount = amount;
+        this.type = type;
+        this.description = description;
+    }
+
+    public Bill(Timestamp date, Double amount, String type, String description) {
         this.date = date;
         this.amount = amount;
         this.type = type;
@@ -71,10 +90,5 @@ public class Bill {
                 '}';
     }
 
-    public Bill(Timestamp date, Double amount, String type, String description) {
-        this.date = date;
-        this.amount = amount;
-        this.type = type;
-        this.description = description;
-    }
+
 }

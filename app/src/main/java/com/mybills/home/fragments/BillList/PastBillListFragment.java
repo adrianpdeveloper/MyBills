@@ -54,16 +54,28 @@ public class PastBillListFragment extends Fragment {
 
         setup();
         setBills();
-
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        setup();
+        setBills();
+    }
+
+    private void setup() {
+        homeActivity = (HomeActivity) getActivity();
+        firestoreBills = new FirestoreBills();
+
+        homeActivity.showProgressBar();
+    }
 
     //Carga las bills para cada recycler
     public void setBills() {
-        //Carga los gastos de esta semana
+        homeActivity.showProgressBar();
+        //Carga los gastos de la semana actual
         firestoreBills.getWeekBills(homeActivity.getUserId(), bills -> {
             weekBillsAdapter(bills);
-            homeActivity.hideProgressBar();
         });
 
         //Carga los gastos de este mes hasta la semana actual
@@ -71,29 +83,25 @@ public class PastBillListFragment extends Fragment {
             monthBillsAdapter(bills);
         });
 
-        //Carga los gastos hasta el mes actual
+        //Carga los gastos de antes del mes actual
         firestoreBills.getBeforeMonthBills(homeActivity.getUserId(), bills ->{
             beforeBillsAdapter(bills);
         });
+
     }
 
     //Adapter semana
     private void weekBillsAdapter(ArrayList<Bill> billArrayList) {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
-        BillAdapter adapter = new BillAdapter(billArrayList, new BillAdapter.OnBillClickListener() {
-            @Override
-            public void onBillClick(Bill bill) {
-                Log.e("Fecha bill", bill.getDate().toString());
-                Log.e("Fecha timestamp", DateFormater.getMondayTimestamp().toString());
-                homeActivity.showModifyBillAlert(bill);
-                Log.e("Pulsado", "PULSADO");
-            }
-        });
+        BillAdapter adapter = new BillAdapter(billArrayList, bill -> homeActivity.showModifyBillAlert(bill));
         binding.weekBillsRv.setAdapter(adapter);
         binding.weekBillsRv.setLayoutManager(layoutManager);
+
+        //Si hay registros se  muestra el recycler
         if (!billArrayList.isEmpty()){
             binding.weekBillsRv.setVisibility(View.VISIBLE);
             binding.weekTv.setVisibility(View.VISIBLE);
+            homeActivity.hideProgressBar();
         }
     }
 
@@ -101,19 +109,18 @@ public class PastBillListFragment extends Fragment {
     private void monthBillsAdapter(ArrayList<Bill> billArrayList) {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
 
-        BillAdapter adapter = new BillAdapter(billArrayList, new BillAdapter.OnBillClickListener() {
-            @Override
-            public void onBillClick(Bill bill) {
-                homeActivity.showModifyBillAlert(bill);
-                Log.e("Pulsado", "PULSADO");
-            }
+        BillAdapter adapter = new BillAdapter(billArrayList, bill -> {
+            homeActivity.showModifyBillAlert(bill);
         });
 
         binding.monthBillsRv.setAdapter(adapter);
         binding.monthBillsRv.setLayoutManager(layoutManager);
+
+        //Si hay registros se  muestra el recycler
         if (!billArrayList.isEmpty()){
             binding.monthBillsRv.setVisibility(View.VISIBLE);
             binding.monthTv.setVisibility(View.VISIBLE);
+            homeActivity.hideProgressBar();
         }
     }
 
@@ -121,40 +128,30 @@ public class PastBillListFragment extends Fragment {
     private void beforeBillsAdapter(ArrayList<Bill> billArrayList) {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
 
-        BillAdapter adapter = new BillAdapter(billArrayList, new BillAdapter.OnBillClickListener() {
-            @Override
-            public void onBillClick(Bill bill) {
-                homeActivity.showModifyBillAlert(bill);
-                Log.e("Pulsado", "PULSADO");
-            }
-        });
+        BillAdapter adapter = new BillAdapter(billArrayList, bill -> homeActivity.showModifyBillAlert(bill));
         binding.beforeBillsRv.setAdapter(adapter);
         binding.beforeBillsRv.setLayoutManager(layoutManager);
 
+        //Si hay registros se  muestra el recycler
         if (!billArrayList.isEmpty()){
             binding.beforeBillsRv.setVisibility(View.VISIBLE);
             binding.beforeTv.setVisibility(View.VISIBLE);
+            homeActivity.hideProgressBar();
         }
-        if (binding.beforeBillsRv.getVisibility()==View.GONE && binding.monthBillsRv.getVisibility()==View.GONE && binding.weekBillsRv.getVisibility()==View.GONE){
+
+        checkRecyclers();
+    }
+
+    //Comprueba si los recycles son visibles, si no lo son se muestra un mensaje que indica que no hay registros
+    private void checkRecyclers(){
+        if (binding.beforeBillsRv.getVisibility()==View.VISIBLE || binding.monthBillsRv.getVisibility()==View.VISIBLE || binding.weekBillsRv.getVisibility()==View.VISIBLE){
+            Log.i("VISIBLE","VISIBLE");
+            homeActivity.hideNoRegistry();
+        }else {
+            Log.i("NO VISIBLE","NO VISIBLE");
+            homeActivity.hideProgressBar();
             homeActivity.showNoRegistry();
         }
-    }
-
-    private void setup() {
-        homeActivity = (HomeActivity) getActivity();
-        firestoreBills = new FirestoreBills();
-
-
-        homeActivity.hideNoRegistry();
-
-        homeActivity.showProgressBar();
-
-    }
-    @Override
-    public void onResume() {
-        super.onResume();
-        setup();
-        setBills();
     }
     
 }

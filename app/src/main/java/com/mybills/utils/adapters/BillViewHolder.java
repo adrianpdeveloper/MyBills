@@ -12,9 +12,9 @@ import java.text.NumberFormat;
 
 public class BillViewHolder extends RecyclerView.ViewHolder {
 
-    private BillListBinding binding;
+    private final BillListBinding binding;
 
-    private DateFormater dateFormater;
+    private final DateFormater dateFormater;
 
 
 
@@ -24,6 +24,7 @@ public class BillViewHolder extends RecyclerView.ViewHolder {
         dateFormater = new DateFormater();
     }
 
+    //Binding de los elementos de los items
     public void bind(Bill bill){
         String type = bill.getType();
         binding.descripcionTv.setText(bill.getDescription());
@@ -35,7 +36,7 @@ public class BillViewHolder extends RecyclerView.ViewHolder {
         binding.amountTv.setText(formattedAmount);
         binding.dateTv.setText(dateFormater.timestampToStringLong(bill.getDate()));
 
-        //Color del recycler view segun el tipo
+        //Color de los detalles del recycler view segun el tipo
         if (type.equals(binding.getRoot().getContext().getResources().getString(R.string.billTypeOptions_Cuentas))){
             binding.listBackground.setBackgroundColor((binding.getRoot().getContext().getColor(R.color.typeCuentas)));
         }
@@ -61,8 +62,6 @@ public class BillViewHolder extends RecyclerView.ViewHolder {
         if (type.equals(binding.getRoot().getContext().getResources().getString(R.string.billTypeOptions_Vivienda))){
             binding.listBackground.setBackgroundColor((binding.getRoot().getContext().getColor(R.color.typeVivienda)));
         }
-
-
 
     }
 }

@@ -140,10 +140,31 @@
     <string name="year_2029">2029</string>
     <string name="year_2030">2030</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="delete_bill">Se va a borrar permanentemente. ¿Continuar?</string>
     <string name="default_web_client_id">1:28966169115:android:d0fb44e36431690ccce6be</string>
+
+    <string name="toolbarTitleHome">Home</string>
+    <string name="toolbarTitleReport">Informes</string>
+    <string name="toolbarTitleCalendar">Calendario</string>
+    <string name="toolbarTitleBills">Gastos</string>
+    <string name="fechaHint">Fecha</string>
+    <string name="hoyString">Hoy</string>
+    <string name="importeHint">Importe</string>
+    <string name="descripcionHint">Descripción</string>
+    <string name="aceptarString">Aceptar</string>
+    <string name="cancelarString">Cancelar</string>
+    <string name="monthPickerTitle">Elige un mes</string>
+    <string name="PieChartTitle">Gastos de este mes:</string>
+    <string name="weekRecyclerTitle">Esta semana</string>
+    <string name="monthRecyclerTitle">Este mes</string>
+    <string name="beforeRecyclerTitle">Anterior</string>
+    <string name="reportResumen">Resumen:</string>
+    <string name="noRegistryReport">No hay registros</string>
+    <string name="googleSignInBtn">Inicia sesión con Google</string>
+    <string name="ultimosRegistrosString">Ultimos registros:</string>
+    <string name="showMoreBtn">Mostrar más</string>
+    <string name="noRegistryCalendar">No hay registros para este dia</string>
+    <string name="noRegistryMain">No hay registros para mostrar</string>
 
 
 </resources>

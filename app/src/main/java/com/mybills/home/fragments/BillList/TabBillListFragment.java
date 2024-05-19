@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.mybills.R;
 import com.mybills.databinding.FragmentTabBillListBinding;
 import com.mybills.home.HomeActivity;
 import com.mybills.home.fragments.BillList.adapter.BillListAdapter;
@@ -59,7 +60,12 @@ public class TabBillListFragment extends Fragment {
 
     public void setup() {
         homeActivity = (HomeActivity) getActivity();
-        homeActivity.hideNoRegistry();
+        homeActivity.showProgressBar();
+
+        //Cambia el titulo de la toolbar
+        homeActivity.toolbarTitle(getString(R.string.toolbarTitleBills));
+
+        //ViewPager2 setup
         viewPager();
     }
 
@@ -99,10 +105,13 @@ public class TabBillListFragment extends Fragment {
             }
         });
     }
+
+    //Cambia la posicion del ViewPager
     public void setViewPagerPosition(int position){
         viewPager2.setCurrentItem(position);
     }
 
+    //Obtiene la posicion del ViewPager
     public int getViewPagerPosition(){
         return viewPager2.getCurrentItem();
     }

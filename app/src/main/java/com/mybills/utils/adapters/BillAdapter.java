@@ -1,7 +1,6 @@
 package com.mybills.utils.adapters;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -11,7 +10,6 @@ import com.mybills.databinding.BillListBinding;
 import com.mybills.model.Bill;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class BillAdapter extends RecyclerView.Adapter<BillViewHolder> {
 
@@ -21,11 +19,10 @@ public class BillAdapter extends RecyclerView.Adapter<BillViewHolder> {
 
     private OnBillClickListener listener;
 
+    //Interfaz de onClick
     public interface OnBillClickListener {
-        void onBillClick(Bill bill); // Replace "Bill" with your actual data type
+        void onBillClick(Bill bill);
     }
-
-
 
     public BillAdapter(ArrayList<Bill> billArrayList, OnBillClickListener onBillClickListener) {
         this.items = billArrayList;
@@ -35,7 +32,6 @@ public class BillAdapter extends RecyclerView.Adapter<BillViewHolder> {
     public BillAdapter(ArrayList<Bill> billArrayList) {
         this.items = billArrayList;
     }
-
 
     @NonNull
     @Override
@@ -48,12 +44,10 @@ public class BillAdapter extends RecyclerView.Adapter<BillViewHolder> {
     public void onBindViewHolder(@NonNull BillViewHolder holder, int position) {
         holder.bind(items.get(position));
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (listener!=null){
-                    listener.onBillClick(items.get(holder.getAdapterPosition()));
-                }
+        //OnClick de cada item
+        holder.itemView.setOnClickListener(view -> {
+            if (listener!=null){
+                listener.onBillClick(items.get(holder.getAdapterPosition()));
             }
         });
     }

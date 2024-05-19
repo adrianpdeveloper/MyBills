@@ -1,7 +1,5 @@
 package com.mybills.auth.fragments;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -15,11 +13,9 @@ import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.mybills.R;
+import com.google.android.material.snackbar.Snackbar;
 import com.mybills.auth.AuthActivity;
-import com.mybills.databinding.FragmentSignInBinding;
 import com.mybills.databinding.FragmentSignUpBinding;
 
 import java.util.regex.Matcher;
@@ -57,14 +53,19 @@ public class SignUpFragment extends Fragment {
 
 
     }
+    private void setup() {
+        authActivity = (AuthActivity) getActivity();
+    }
 
     private void listeners() {
+        //Comprueba que los terminos se han aceptado
         binding.terminosCb.setOnClickListener(view -> {
             if (binding.terminosCb.isChecked()) {
                 authActivity.terminosCondiciones();
             }
         });
 
+        //Comprueba el formato
         binding.emailEt.setOnFocusChangeListener((view, b) -> {
             if (!binding.emailEt.getText().toString().isEmpty()) {
                 if (!Patterns.EMAIL_ADDRESS.matcher(binding.emailEt.getText().toString()).matches() || binding.emailEt.getText().toString().isEmpty()) {
@@ -122,10 +123,16 @@ public class SignUpFragment extends Fragment {
             }
         });
 
+        //Comprueba que se ha cumplimentado los datos
         binding.signUpBtn.setOnClickListener(view -> checkInputs());
 
+        //Sign in de google
+        binding.googleSignInBtn.setOnClickListener(view -> authActivity.googleSignIn());
+
+        //Va a pantalla de SignIn
         binding.signInTv.setOnClickListener(view -> authActivity.goToSignin());
 
+        //Si se pulsa boton atras, va a sign in
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -148,21 +155,19 @@ public class SignUpFragment extends Fragment {
         } else if (!binding.password2Et.getText().toString().equals(binding.passwordEt.getText().toString())){
             binding.password2Il.setError("Las contraseñas no coinciden");
         }  else if (!binding.terminosCb.isChecked()) {
-            Toast.makeText(authActivity.getBaseContext(), "Debes aceptar nuestros terminos y condiciones", Toast.LENGTH_SHORT).show();
+            Snackbar.make(getActivity().findViewById(android.R.id.content), "Debes aceptar nuestros terminos y condiciones.", Snackbar.LENGTH_LONG).show();
         } else {
             authActivity.signUp(binding.emailEt.getText().toString(), binding.passwordEt.getText().toString());
         }
     }
 
-
+    //Si no esta deacuerdo quital el check
     public void uncheckCheckBox() {
         if (binding.terminosCb != null) {
             binding.terminosCb.setChecked(false);
         }
     }
-    private void setup() {
-        authActivity = (AuthActivity) getActivity();
-    }
+
 
 
 }

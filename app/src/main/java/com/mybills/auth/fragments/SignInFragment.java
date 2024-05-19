@@ -8,16 +8,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.mybills.R;
 import com.mybills.auth.AuthActivity;
 import com.mybills.databinding.FragmentSignInBinding;
 
@@ -56,6 +53,7 @@ public class SignInFragment extends Fragment {
 
     private void setup() {
         authActivity = (AuthActivity) getActivity();
+
         binding.emailIl.setError(null);
         binding.passwordIl.setError(null);
     }
@@ -101,11 +99,13 @@ public class SignInFragment extends Fragment {
             }
         });
 
+        //Va a registro
         binding.signUpTv.setOnClickListener(view -> authActivity.goToRegister());
 
-
+        //Reset de password
         binding.resetPasswordTv.setOnClickListener(view -> authActivity.resetPassword());
 
+        //Si se pulsa boton hacia atras, minimiza la app
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -114,15 +114,10 @@ public class SignInFragment extends Fragment {
             }
         });
 
-        binding.googleSignInBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                authActivity.signIn();
-            }
-        });
+        binding.googleSignInBtn.setOnClickListener(view -> authActivity.googleSignIn());
     }
 
-    //Chekea que los campos estan correctamente rellenados.
+    //Checkea que los campos estan correctamente rellenados.
     private void checkInputs() {
         if (binding.emailEt.getText().toString().isEmpty()){
             binding.emailIl.setError("Introduce un e-mail válido");
@@ -132,9 +127,9 @@ public class SignInFragment extends Fragment {
             binding.passwordIl.setError("Introduce una contraseña válida");
         }
         if (binding.emailIl.getError()==null && binding.passwordIl.getError()==null){
-            authActivity.signIn(binding.emailEt.getText().toString(), binding.passwordEt.getText().toString());
+            authActivity.emailSignIn(binding.emailEt.getText().toString(), binding.passwordEt.getText().toString());
         }else{
-            Toast.makeText(getContext(), "Introduce los datos correctamente", Toast.LENGTH_SHORT).show();
+            Snackbar.make(getActivity().findViewById(android.R.id.content), "Introduce los datos correctamente.", Snackbar.LENGTH_LONG).show();
         }
     }
 

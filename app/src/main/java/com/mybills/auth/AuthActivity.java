@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -20,6 +21,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -57,9 +59,9 @@ public class AuthActivity extends AppCompatActivity {
         googleSignInSetup();
         mAuth = FirebaseAuth.getInstance();
 
+        //Si se llega a esta pantalla desde el boton de logout
         Intent intent = getIntent();
         if (intent!=null){
-            Log.d("LOGOUT","intent no nulo");
             boolean receivedBoolean = intent.getBooleanExtra("signOut", false);
             if (receivedBoolean){
                 Log.d("LOGOUT","singOut");
@@ -68,8 +70,7 @@ public class AuthActivity extends AppCompatActivity {
         }
 
 
-
-        //Si ya hay sesión va a la home
+        //Si ya hay una sesión va a la pantalla home.
         if (mAuth.getCurrentUser()!=null){
             goToHome();
         }
@@ -77,8 +78,8 @@ public class AuthActivity extends AppCompatActivity {
 
     }
 
-    //Inicia sesión
-    public void signIn(String email, String pass) {
+    //Inicia sesión con email y contraseña
+    public void emailSignIn(String email, String pass) {
         FirebaseAuth.getInstance().signInWithEmailAndPassword(email,pass)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
@@ -92,12 +93,53 @@ public class AuthActivity extends AppCompatActivity {
                 });
     }
 
-    //Ir a la home
+    //Comprueba si el email esta verificado y va a la home activity
     private void goToHome() {
-        startActivity(new Intent(AuthActivity.this, HomeActivity.class));
+        if (mAuth.getCurrentUser().isEmailVerified()){
+            startActivity(new Intent(AuthActivity.this, HomeActivity.class));
+        } else {
+            //Si el email no esta verificado
+            //Envia email de verificación
+            mAuth.getCurrentUser().sendEmailVerification();
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this)
+                    .setTitle("Debes verificar tu cuenta.")
+                    .setMessage("Es necesario verificar la cuenta de correo. Se ha enviado un correo a tu e-mail.")
+                    .setNegativeButton("Volver a enviar", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            mAuth.getCurrentUser().sendEmailVerification();
+                        }
+                    })
+                    .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss(); // Cierra el diálogo
+                        }
+                    });
+
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+
+            //Si se pulsa en enviar nuevo email se deshabilita el boton
+            alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setEnabled(false);
+                }
+            });
+
+            alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialogInterface) {
+                    Snackbar.make(findViewById(android.R.id.content), "Si ya has verificado el e-mail, puedes volver a iniciar sesión.", Snackbar.LENGTH_LONG).show();
+                }
+            });
+        }
+
+
     }
 
-    //Registrar cuenta
+    //Registrar cuenta con email y contraseña
     public void signUp(String email, String pass){
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email,pass)
                 .addOnCompleteListener(task -> {
@@ -155,6 +197,7 @@ public class AuthActivity extends AppCompatActivity {
                 .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        //Si no esta deacurdo quita el check
                         SignUpFragment signUpFragment = (SignUpFragment) getSupportFragmentManager().findFragmentById(R.id.auth_activity_frame);
                         signUpFragment.uncheckCheckBox();
                         dialogInterface.dismiss(); // Cierra el diálogo
@@ -169,7 +212,6 @@ public class AuthActivity extends AppCompatActivity {
     //Funcion para recibir e-mail de recuperar contraseña
     public void resetPassword() {
         final TextInputEditText email_et = new TextInputEditText(this);
-
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this)
                 .setTitle("Cambiar contraseña.")
@@ -201,16 +243,22 @@ public class AuthActivity extends AppCompatActivity {
 
     }
 
+    //Minimiza la aplicación
     public void minimizeApp() {moveTaskToBack(true);}
 
-    public void signIn() {
+    //Ejecuta el signIn de google
+    public void googleSignIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         googleSignInLauncher.launch(signInIntent);
     }
+
+    //Logout tanto de google como por cuenta de firebase auth.
     public void signOut(){
             mAuth.signOut();
             mGoogleSignInClient.signOut();
     }
+
+    //Setup de sign in de google
     public void googleSignInSetup(){
         googleSignInLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),

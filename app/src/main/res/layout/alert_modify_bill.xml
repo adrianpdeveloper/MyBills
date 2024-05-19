@@ -1,80 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="325dp"
-    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/addBillCardView"
+    android:layout_width="325dp"
+    android:layout_height="wrap_content"
     app:cardCornerRadius="8dp">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/header_cv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_constraintTop_toTopOf="parent"
             app:cardBackgroundColor="@color/typeCuentas"
             app:cardElevation="15dp"
-            >
+            app:layout_constraintTop_toTopOf="parent">
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/type_il"
                     style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="24dp"
+                    android:layout_marginTop="4dp"
                     app:boxBackgroundColor="@android:color/transparent"
+                    app:boxStrokeColor="@android:color/transparent"
+                    app:boxStrokeWidth="0dp"
                     app:endIconDrawable="@drawable/baseline_keyboard_arrow_down_24"
                     app:endIconMode="dropdown_menu"
                     app:endIconTint="@color/black"
-                    android:id="@+id/type_il"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginHorizontal="24dp"
-                    app:boxStrokeColor="@android:color/transparent"
-                    app:boxStrokeWidth="0dp"
-                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    >
+                    app:layout_constraintTop_toTopOf="parent">
+
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/type_et"
-                        android:backgroundTint="@android:color/transparent"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:backgroundTint="@android:color/transparent"
                         android:completionThreshold="1"
-                        android:text="@string/billTypeOptions_Cuentas"
                         android:focusable="false"
                         android:focusableInTouchMode="true"
-                        android:textSize="18dp"
-                        />
+                        android:text="@string/billTypeOptions_Cuentas"
+                        android:textSize="18sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/delete_btn"
+                    style="@style/Widget.Material3.Button.IconButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@style/Widget.Material3.Button.IconButton"
-                    app:icon="@drawable/round_delete_24"
-                    app:iconGravity="textEnd"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toTopOf="@id/contentCardView"
-                    app:iconTint="@color/common_google_signin_btn_text_dark_pressed"
-                    android:backgroundTint="@color/danger"
-                    app:cornerRadius="5dp"
                     android:layout_marginTop="2dp"
                     android:layout_marginEnd="16dp"
-                    />
+                    android:backgroundTint="@color/danger"
+                    app:cornerRadius="5dp"
+                    app:icon="@drawable/round_delete_24"
+                    app:iconGravity="textEnd"
+                    app:iconTint="@color/common_google_signin_btn_text_dark_pressed"
+                    app:layout_constraintBottom_toTopOf="@id/contentCardView"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/contentCardView"
-                    android:backgroundTint="@color/white"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:backgroundTint="@color/white"
                     app:cardCornerRadius="8dp"
-                    app:layout_constraintTop_toBottomOf="@id/type_il"
-                    android:layout_marginTop="4dp">
+                    app:layout_constraintTop_toBottomOf="@id/type_il">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
@@ -87,10 +87,10 @@
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="20dp"
                             android:layout_marginTop="16dp"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
+                            android:hint="@string/fechaHint"
                             android:paddingBottom="3dp"
-                            android:hint="Fecha">
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/date_et"
@@ -98,52 +98,51 @@
                                 android:layout_height="match_parent"
                                 android:focusable="false"
                                 android:focusableInTouchMode="false"
-                                android:text="Hoy"
-                                android:textSize="16sp"/>
+                                android:text="@string/hoyString"
+                                android:textSize="16sp" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/date_btn"
+                            style="@style/Widget.Material3.Button.IconButton"
                             android:layout_width="0dp"
                             android:layout_height="0dp"
-                            app:layout_constraintDimensionRatio="1:1"
-                            app:layout_constraintTop_toTopOf="@id/date_il"
-                            app:layout_constraintBottom_toBottomOf="@id/date_il"
-                            style="@style/Widget.Material3.Button.IconButton"
-                            app:icon="@drawable/round_calendar_today_24"
-                            app:iconGravity="textEnd"
-                            app:layout_constraintStart_toEndOf="@id/date_il"
-                            app:iconTint="@color/white"
+                            android:layout_marginTop="2dp"
                             android:backgroundTint="@color/goldPrimary"
                             app:cornerRadius="2dp"
+                            app:icon="@drawable/round_calendar_today_24"
+                            app:iconGravity="textEnd"
+                            app:iconTint="@color/white"
+                            app:layout_constraintBottom_toBottomOf="@id/date_il"
+                            app:layout_constraintDimensionRatio="1:1"
+                            app:layout_constraintStart_toEndOf="@id/date_il"
 
-                            android:layout_marginTop="2dp"
-                            />
+                            app:layout_constraintTop_toTopOf="@id/date_il" />
+
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/amount_il"
                             style="Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:hint="Importe"
+                            android:layout_marginTop="12dp"
+                            android:hint="@string/importeHint"
+                            app:boxStrokeColor="@android:color/darker_gray"
                             app:endIconDrawable="@drawable/round_euro_24"
                             app:endIconMode="custom"
                             app:expandedHintEnabled="false"
-                            app:layout_constraintStart_toStartOf="@id/date_il"
-                            app:layout_constraintTop_toBottomOf="@id/date_il"
-                            app:layout_constraintEnd_toEndOf="@id/date_btn"
-                            android:layout_marginTop="12dp"
-                            app:boxStrokeColor="@android:color/darker_gray"
                             app:hintTextColor="@android:color/darker_gray"
-                            >
+                            app:layout_constraintEnd_toEndOf="@id/date_btn"
+                            app:layout_constraintStart_toStartOf="@id/date_il"
+                            app:layout_constraintTop_toBottomOf="@id/date_il">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/amount_et"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:inputType="numberDecimal"
                                 android:digits="0123456789,"
-                                android:text="0,00"/>
+                                android:inputType="numberDecimal"
+                                android:text="0,00" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -155,51 +154,49 @@
                             android:layout_marginHorizontal="20dp"
                             android:layout_marginTop="12dp"
                             android:layout_marginBottom="16dp"
-                            android:hint="Descripción"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/amount_il"
+                            android:hint="@string/descripcionHint"
                             app:boxStrokeColor="@android:color/darker_gray"
                             app:hintTextColor="@android:color/darker_gray"
-                            >
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/amount_il">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/descripcion_et"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:minLines="1"
-                                android:maxLines="5"
+                                android:gravity="top|start"
                                 android:inputType="textMultiLine"
-                                android:gravity="top|start"/>
+                                android:maxLines="5"
+                                android:minLines="1" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/aceptar_btn"
+                            style="@style/Widget.MaterialComponents.Button.TextButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            style="@style/Widget.MaterialComponents.Button.TextButton"
-                            android:textColor="@color/black"
-                            android:layout_marginEnd="16dp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/descripcion_il"
                             android:layout_marginVertical="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:text="@string/aceptarString"
+                            android:textColor="@color/black"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            android:text="Aceptar"/>
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/descripcion_il" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/cancelar_btn"
+                            style="@style/Widget.MaterialComponents.Button.TextButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            style="@style/Widget.MaterialComponents.Button.TextButton"
-                            app:layout_constraintEnd_toStartOf="@+id/aceptar_btn"
-                            app:layout_constraintTop_toBottomOf="@id/descripcion_il"
                             android:layout_marginVertical="16dp"
                             android:layout_marginEnd="16dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
+                            android:text="@string/cancelarString"
                             android:textColor="@android:color/holo_red_light"
-                            android:text="Cancelar"/>
-
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/aceptar_btn"
+                            app:layout_constraintTop_toBottomOf="@id/descripcion_il" />
 
 
                     </androidx.constraintlayout.widget.ConstraintLayout>

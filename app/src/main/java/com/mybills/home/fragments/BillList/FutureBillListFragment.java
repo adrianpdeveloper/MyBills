@@ -1,6 +1,5 @@
 package com.mybills.home.fragments.BillList;
 
-import android.app.FragmentManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,9 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.mybills.R;
 import com.mybills.databinding.FragmentFutureBillListBinding;
-import com.mybills.databinding.FragmentTabBillListBinding;
 import com.mybills.firebase.FirestoreBills;
 import com.mybills.home.HomeActivity;
 import com.mybills.model.Bill;
@@ -60,12 +57,9 @@ public class FutureBillListFragment extends Fragment {
     //Adapter setup
     private void adapter(ArrayList<Bill> billArrayList) {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
-        BillAdapter adapter = new BillAdapter(billArrayList, new BillAdapter.OnBillClickListener() {
-            @Override
-            public void onBillClick(Bill bill) {
-                homeActivity.showModifyBillAlert(bill);
-                Log.e("Pulsado", "PULSADO");
-            }
+        BillAdapter adapter = new BillAdapter(billArrayList, bill -> {
+            homeActivity.showModifyBillAlert(bill);
+            Log.e("Pulsado", "PULSADO");
         });
 
 
@@ -73,12 +67,13 @@ public class FutureBillListFragment extends Fragment {
         binding.billsRv.setLayoutManager(layoutManager);
     }
 
+    //Carga gastos futuros
     public void setBills() {
-        //Carga gastos futuros
         firestoreBills.getFutureBills(homeActivity.getUserId(), bills -> {
             adapter(bills);
             binding.billsRv.setVisibility(View.VISIBLE);
             homeActivity.hideProgressBar();
+            //Si no hay gastos se muestra un mensaje que indica que no hay registros
             if (bills.isEmpty()){
                 homeActivity.showNoRegistry();
             }

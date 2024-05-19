@@ -1,4 +1,4 @@
-package com.mybills.home.fragments;
+package com.mybills.home.fragments.Summary;
 
 import android.os.Bundle;
 
@@ -10,10 +10,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 
 import com.mybills.R;
 import com.mybills.databinding.FragmentSummaryBinding;
@@ -54,11 +54,36 @@ public class SummaryFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        setup();
+        listeners();
+        setBills();
+        setPlot();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
 
         setup();
         listeners();
         setBills();
         setPlot();
+    }
+
+    private void setup() {
+        homeActivity = (HomeActivity) getActivity();
+        firestoreBills = new FirestoreBills();
+
+        //Esconde mensaje de no hay registros
+        homeActivity.hideNoRegistry();
+
+        //Muestra simbolo de carga
+        homeActivity.showProgressBar();
+
+        //Cambia el titulo de la toolbar
+        homeActivity.toolbarTitle(getString(R.string.toolbarTitleHome));
+
+
     }
 
     //Infla fragmento del gráfico
@@ -79,13 +104,11 @@ public class SummaryFragment extends Fragment {
     //Adapter setup
     private void adapter(ArrayList<Bill> billArrayList) {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
-        BillAdapter adapter = new BillAdapter(billArrayList, new BillAdapter.OnBillClickListener() {
-            @Override
-            public void onBillClick(Bill bill) {
-                homeActivity.showModifyBillAlert(bill);
-            }
-        });
 
+        //Adapter con lista de gastos y onClick que lleva a modificar gastos
+        BillAdapter adapter = new BillAdapter(billArrayList, bill -> homeActivity.showModifyBillAlert(bill));
+
+        //Setea el adaptador al recyclerView
         binding.billsRv.setAdapter(adapter);
         binding.billsRv.setLayoutManager(layoutManager);
 
@@ -94,49 +117,43 @@ public class SummaryFragment extends Fragment {
     //Carga los ultimos 5 registros
     public void setBills() {
         firestoreBills.getBillsLast5(homeActivity.getUserId(), bills -> {
-            Log.e("5 ultimas", bills.size()+"");
             adapter(bills);
+            //Si hay gastos
             if (!bills.isEmpty()){
+                homeActivity.hideProgressBar();
                 binding.listCardview.setVisibility(View.VISIBLE);
             }
-
+            //Esconde el simbolo de carga
             homeActivity.hideProgressBar();
-            if (binding.listCardview.getVisibility()==View.GONE && binding.plotCardview.getVisibility()==View.GONE){
+            //Si los gastos no son visibles se muestra mensaje de no hay registros
+            if (binding.listCardview.getVisibility()==View.GONE){
                 homeActivity.showNoRegistry();
+
+                //Animacion en fab de añadir gasto si no hay registros
+                binding.addBillFab.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.pulse_fab));
             }
         });
     }
+
+    //Refresca los datos del Plot
     public void refreshPlot() {
         FragmentManager fragmentManager = getChildFragmentManager();
         BillsPlotFragment billsPlotFragment = (BillsPlotFragment) fragmentManager.findFragmentById(R.id.plotFrame);
 
         billsPlotFragment.setup();
-
     }
 
-    private void setup() {
-        homeActivity = (HomeActivity) getActivity();
-        firestoreBills = new FirestoreBills();
-
-        homeActivity.hideNoRegistry();
-
-        homeActivity.showProgressBar();
-
-
-    }
     private void listeners(){
         //Muestra la alert para crear gasto
         binding.addBillFab.setOnClickListener(view -> homeActivity.showAddBillAlert());
+
         //Ir a la lista de bills
         binding.seeMoreBtn.setOnClickListener(view -> homeActivity.goToBillList());
 
-        binding.plotCardview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                homeActivity.goToReport();
-            }
-        });
+        //Ir a la pantalla de informes
+        binding.plotCardview.setOnClickListener(view -> homeActivity.goToReport());
 
+        //Si se pulsa boton de ir hacia atras se minimiza la app
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {

@@ -4,23 +4,17 @@ import static com.mybills.utils.DateFormater.*;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.mybills.model.Bill;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Vector;
-
 
 public class FirestoreBills {
     FirebaseFirestore db;
@@ -48,16 +42,16 @@ public class FirestoreBills {
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        ArrayList<Bill> billArrayList = new ArrayList<Bill>();
+                        ArrayList<Bill> billArrayList = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Bill bill = document.toObject(Bill.class);
                             bill.setBillId(document.getId());
-                            Log.e("BILL TO STRING", bill.toString());
                             billArrayList.add(bill);
                         }
+                        Log.d("BILLS LIST", billArrayList.toString());
                         listener.onBillsLoaded(billArrayList);
                     } else {
-                        Log.w("Error", "Error getting documents.", task.getException());
+                        Log.e("Error", "Error getting documents.", task.getException());
                     }
                 });
     }
@@ -70,16 +64,16 @@ public class FirestoreBills {
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        ArrayList<Bill> billArrayList = new ArrayList<Bill>();
+                        ArrayList<Bill> billArrayList = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Bill bill = document.toObject(Bill.class);
                             bill.setBillId(document.getId());
-                            Log.e("BILL TO STRING", bill.toString());
                             billArrayList.add(bill);
                         }
+                        Log.d("BILLS LIST", billArrayList.toString());
                         listener.onBillsLoaded(billArrayList);
                     } else {
-                        Log.w("Error", "Error getting documents.", task.getException());
+                        Log.e("Error", "Error getting documents.", task.getException());
                     }
                 });
     }
@@ -93,16 +87,16 @@ public class FirestoreBills {
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        ArrayList<Bill> billArrayList = new ArrayList<Bill>();
+                        ArrayList<Bill> billArrayList = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Bill bill = document.toObject(Bill.class);
                             bill.setBillId(document.getId());
-                            Log.e("BILL TO STRING", bill.toString());
                             billArrayList.add(bill);
                         }
+                        Log.d("BILLS LIST", billArrayList.toString());
                         listener.onBillsLoaded(billArrayList);
                     } else {
-                        Log.w("Error", "Error getting documents.", task.getException());
+                        Log.e("Error", "Error getting documents.", task.getException());
                     }
                 });
     }
@@ -116,18 +110,16 @@ public class FirestoreBills {
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        ArrayList<Bill> billArrayList = new ArrayList<Bill>();
+                        ArrayList<Bill> billArrayList = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Bill bill = document.toObject(Bill.class);
                             bill.setBillId(document.getId());
-                            Log.e("BILLS TO STRING", bill.toString());
-                            Log.e("Antes", getDayBefore(dateSelected).toString());
-                            Log.e("Despues ", getDayAfter(dateSelected).toString());
                             billArrayList.add(bill);
                         }
+                        Log.d("BILLS LIST", billArrayList.toString());
                         listener.onBillsLoaded(billArrayList);
                     } else {
-                        Log.w("Error", "Error getting documents.", task.getException());
+                        Log.e("Error", "Error getting documents.", task.getException());
                     }
                 });
     }
@@ -142,23 +134,21 @@ public class FirestoreBills {
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        ArrayList<Bill> billArrayList = new ArrayList<Bill>();
+                        ArrayList<Bill> billArrayList = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Bill bill = document.toObject(Bill.class);
                             bill.setBillId(document.getId());
-                            Log.e("BILL TO STRING", bill.toString());
                             billArrayList.add(bill);
                         }
+                        Log.d("BILLS LIST", billArrayList.toString());
                         listener.onBillsLoaded(billArrayList);
                     } else {
-                        Log.w("Error", "Error getting documents.", task.getException());
+                        Log.e("Error", "Error getting documents.", task.getException());
                     }
                 });
     }
 
     public void getXMonthTypeBills(String userId, String month, String type, final OnBillsLoadedListener listener) {
-        Log.e("DESPUES", getLastDayOfPreviousXMonthTimestamp(month)+"");
-        Log.e("ANTES", getLastDayOfXMonthTimestamp(month)+"");
         db.collection("bills")
                 .whereGreaterThan("date",getLastDayOfPreviousXMonthTimestamp(month))
                 .whereLessThan("date", getLastDayOfXMonthTimestamp(month))
@@ -168,21 +158,21 @@ public class FirestoreBills {
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        ArrayList<Bill> billArrayList = new ArrayList<Bill>();
+                        ArrayList<Bill> billArrayList = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Bill bill = document.toObject(Bill.class);
                             bill.setBillId(document.getId());
-                            Log.e("BILL TO STRING", bill.toString());
                             billArrayList.add(bill);
                         }
+                        Log.d("BILLS LIST", billArrayList.toString());
                         listener.onBillsLoaded(billArrayList);
-                        Log.e("BILL TO STRING", billArrayList.size()+"");
                     } else {
-                        Log.w("Error", "Error getting documents.", task.getException());
+                        Log.e("Error", "Error getting documents.", task.getException());
                     }
                 });
     }
 
+    //Get Gastos de el mes otorgado
     public void getXMonthBills(String userId, String month, final OnBillsLoadedListener listener) {
         db.collection("bills")
                 .whereGreaterThan("date",getLastDayOfPreviousXMonthTimestamp(month))
@@ -192,18 +182,16 @@ public class FirestoreBills {
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        ArrayList<Bill> billArrayList = new ArrayList<Bill>();
+                        ArrayList<Bill> billArrayList = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Bill bill = document.toObject(Bill.class);
                             bill.setBillId(document.getId());
-                            Log.e("BILL TO STRING", bill.toString());
                             billArrayList.add(bill);
                         }
+                        Log.d("BILLS LIST", billArrayList.toString());
                         listener.onBillsLoaded(billArrayList);
-                        Log.e("ARRAY LIST TO STRING", billArrayList.toString());
-                        Log.e("BILL SIZE", billArrayList.size()+"");
                     } else {
-                        Log.w("Error", "Error getting documents.", task.getException());
+                        Log.e("Error", "Error getting documents.", task.getException());
                     }
                 });
     }
@@ -217,38 +205,18 @@ public class FirestoreBills {
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        ArrayList<Bill> billArrayList = new ArrayList<Bill>();
+                        ArrayList<Bill> billArrayList = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Bill bill = document.toObject(Bill.class);
                             bill.setBillId(document.getId());
-                            Log.e("BILL TO STRING", bill.toString());
                             billArrayList.add(bill);
                         }
+                        Log.d("BILLS LIST", billArrayList.toString());
                         listener.onBillsLoaded(billArrayList);
                     } else {
-                        Log.w("Error", "Error getting documents.", task.getException());
+                        Log.e("Error", "Error getting documents.", task.getException());
                     }
                 });
-    }
-
-    //Put Gasto
-    public Task<DocumentReference> putBill( Map<String, Object> bill ){
-        return db.collection("bills")
-                .add(bill);
-    }
-
-    //Update Gasto
-    public Task<Void> updateBill(Map<String, Object> bill, String billId ){
-        return db.collection("bills")
-                .document(billId)
-                .update(bill);
-    }
-
-    //Delete Gasto
-    public Task<Void> deleteBill(String billId ){
-        return db.collection("bills")
-                .document(billId)
-                .delete();
     }
 
     //Get Importes por tipo e Importe total
@@ -305,12 +273,12 @@ public class FirestoreBills {
                         }
                         onBillsAmountLoaded.onBillsAmountLoaded(totalAmount,total);
                     } else {
-                        Log.w("Error", "Error al obtener documentos.", task.getException());
+                        Log.e("Error", "Error al obtener documentos.", task.getException());
                     }
                 });
     }
 
-    //Get Importes por tipo e Importe total
+    //Get Importes por tipo e Importe total del mes otorgado
     public void getXMonthAmount(String userId,String month, final onBillsAmountLoaded onBillsAmountLoaded) {
         db.collection("bills")
                 .whereGreaterThan("date",getLastDayOfPreviousXMonthTimestamp(month))
@@ -362,12 +330,31 @@ public class FirestoreBills {
                             }
 
                         }
-                        Log.e("BILLS TOTALES", totalAmount.toString());
                         onBillsAmountLoaded.onBillsAmountLoaded(totalAmount,total);
                     } else {
-                        Log.w("Error", "Error al obtener documentos.", task.getException());
+                        Log.e("Error", "Error al obtener documentos.", task.getException());
                     }
                 });
+    }
+
+    //Put Gasto
+    public Task<DocumentReference> putBill( Map<String, Object> bill ){
+        return db.collection("bills")
+                .add(bill);
+    }
+
+    //Update Gasto
+    public Task<Void> updateBill(Map<String, Object> bill, String billId ){
+        return db.collection("bills")
+                .document(billId)
+                .update(bill);
+    }
+
+    //Delete Gasto
+    public Task<Void> deleteBill(String billId ){
+        return db.collection("bills")
+                .document(billId)
+                .delete();
     }
 
 
