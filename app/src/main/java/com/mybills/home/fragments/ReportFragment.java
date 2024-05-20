@@ -95,7 +95,7 @@ public class ReportFragment extends Fragment {
     ArrayList<Bill> allArrayBills;
 
     HorizontalBarChart barChart;
-    Double totalAmount;
+    Double totalAmount = 0.0;
 
     NumberFormat euroFormat;
 
@@ -149,7 +149,7 @@ public class ReportFragment extends Fragment {
         binding.monthTv.setText(actualMonth);
 
         //Carga las opciones del AutoCompleteTextView de tipo de gasto
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, getResources().getStringArray(R.array.billTypeOptions));
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_dropdown_item_1line, getResources().getStringArray(R.array.billTypeOptions));
         binding.typeEt.setAdapter(adapter);
 
 
@@ -158,7 +158,6 @@ public class ReportFragment extends Fragment {
         //Formato para los importes
         euroFormat = NumberFormat.getCurrencyInstance(Locale.getDefault());
         euroFormat.setCurrency(Currency.getInstance("EUR"));
-
     }
 
     //Refresca el grafico y el recycler

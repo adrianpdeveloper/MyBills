@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.mybills.R;
 import com.mybills.auth.AuthActivity;
 import com.mybills.databinding.FragmentSignInBinding;
 
@@ -68,7 +69,7 @@ public class SignInFragment extends Fragment {
         binding.emailEt.setOnFocusChangeListener((view, b) -> {
             if (!binding.emailEt.getText().toString().isEmpty()) {
                 if (!Patterns.EMAIL_ADDRESS.matcher(binding.emailEt.getText().toString()).matches() || binding.emailEt.getText().toString().equals("")) {
-                    binding.emailIl.setError("Introduce un email valido");
+                    binding.emailIl.setError(getResources().getString(R.string.emailSetError));
                 }else{
                     binding.emailIl.setError(null);
                     binding.emailIl.setErrorEnabled(false);
@@ -89,7 +90,7 @@ public class SignInFragment extends Fragment {
                     binding.passwordIl.setError(null);
                     binding.passwordIl.setErrorEnabled(false);
                 }else {
-                    binding.passwordIl.setError("Introduce una contraseña válida");
+                    binding.passwordIl.setError(getResources().getString(R.string.passwordSetError));
                 }
             }
 
@@ -120,16 +121,15 @@ public class SignInFragment extends Fragment {
     //Checkea que los campos estan correctamente rellenados.
     private void checkInputs() {
         if (binding.emailEt.getText().toString().isEmpty()){
-            binding.emailIl.setError("Introduce un e-mail válido");
-
+            binding.emailIl.setError(getResources().getString(R.string.emailSetError));
         }
         if (binding.passwordEt.getText().toString().isEmpty()){
-            binding.passwordIl.setError("Introduce una contraseña válida");
+            binding.passwordIl.setError(getResources().getString(R.string.passwordSetError));
         }
         if (binding.emailIl.getError()==null && binding.passwordIl.getError()==null){
             authActivity.emailSignIn(binding.emailEt.getText().toString(), binding.passwordEt.getText().toString());
         }else{
-            Snackbar.make(getActivity().findViewById(android.R.id.content), "Introduce los datos correctamente.", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(getActivity().findViewById(android.R.id.content), getResources().getString(R.string.genericSetInputError), Snackbar.LENGTH_LONG).show();
         }
     }
 

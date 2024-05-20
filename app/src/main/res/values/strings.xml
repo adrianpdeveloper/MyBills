@@ -165,6 +165,18 @@
     <string name="showMoreBtn">Mostrar más</string>
     <string name="noRegistryCalendar">No hay registros para este dia</string>
     <string name="noRegistryMain">No hay registros para mostrar</string>
+    <string name="signOutAlertTitle">Cerrar sesión.</string>
+    <string name="signOutAlertMessage">Se cerrara la sesión de esta cuenta.</string>
+    <string name="delete_bill_title">Borrar gasto.</string>
+    <string name="addDatePicker_title">Selecciona una fecha.</string>
+    <string name="notificationAlert_title">Permisos de notificaciones.</string>
+    <string name="notificationAlert_message">MyBills requiere de los permisos de notificaciones para poder utilizar todas las funcionalidades.</string>
+    <string name="emailSetError">Introduce un email válido</string>
+    <string name="passwordSetError">Contraseña no válida</string>
+    <string name="secondPasswordSetError">Las contraseñas no coinciden</string>
+    <string name="passSetErrorInfo">La contraseña debe tener por lo menos 6 carácteres, una mayúscula y un número.</string>
+    <string name="termsAndConditionsSnack">Debes aceptar nuestros terminos y condiciones.</string>
+    <string name="genericSetInputError">Introduce los datos correctamente.</string>
 
 
 </resources>

@@ -70,7 +70,7 @@ public class SummaryFragment extends Fragment {
         setPlot();
     }
 
-    private void setup() {
+    public void setup() {
         homeActivity = (HomeActivity) getActivity();
         firestoreBills = new FirestoreBills();
 
@@ -100,6 +100,12 @@ public class SummaryFragment extends Fragment {
         binding.plotFrame.setVisibility(View.VISIBLE);
     }
 
+    //Esconde el grafico
+    public void hidePlot() {
+        binding.plotCardview.setVisibility(View.GONE);
+        binding.plotFrame.setVisibility(View.GONE);
+    }
+
 
     //Adapter setup
     private void adapter(ArrayList<Bill> billArrayList) {
@@ -122,9 +128,11 @@ public class SummaryFragment extends Fragment {
             if (!bills.isEmpty()){
                 homeActivity.hideProgressBar();
                 binding.listCardview.setVisibility(View.VISIBLE);
+            }else {
+                homeActivity.hideProgressBar();
+                binding.listCardview.setVisibility(View.GONE);
             }
-            //Esconde el simbolo de carga
-            homeActivity.hideProgressBar();
+
             //Si los gastos no son visibles se muestra mensaje de no hay registros
             if (binding.listCardview.getVisibility()==View.GONE){
                 homeActivity.showNoRegistry();

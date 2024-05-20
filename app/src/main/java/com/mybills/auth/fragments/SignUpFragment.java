@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.mybills.R;
 import com.mybills.auth.AuthActivity;
 import com.mybills.databinding.FragmentSignUpBinding;
 
@@ -69,7 +70,7 @@ public class SignUpFragment extends Fragment {
         binding.emailEt.setOnFocusChangeListener((view, b) -> {
             if (!binding.emailEt.getText().toString().isEmpty()) {
                 if (!Patterns.EMAIL_ADDRESS.matcher(binding.emailEt.getText().toString()).matches() || binding.emailEt.getText().toString().isEmpty()) {
-                    binding.emailIl.setError("Introduce un email válido");
+                    binding.emailIl.setError(getResources().getString(R.string.emailSetError));
                 }else{
                     binding.emailIl.setError(null);
                     binding.emailIl.setErrorEnabled(false);
@@ -90,7 +91,7 @@ public class SignUpFragment extends Fragment {
                     binding.passwordIl.setError(null);
                     binding.passwordIl.setErrorEnabled(false);
                 }else {
-                    binding.passwordIl.setError("Introduce una contraseña válida");
+                    binding.passwordIl.setError(getResources().getString(R.string.passwordSetError));
                 }
             }
 
@@ -113,7 +114,7 @@ public class SignUpFragment extends Fragment {
                     binding.password2Il.setError(null);
                     binding.password2Il.setErrorEnabled(false);
                 }else if (!binding.password2Et.getText().toString().equals(binding.passwordEt.getText().toString())){
-                    binding.password2Il.setError("Las contraseñas no coinciden");
+                    binding.password2Il.setError(getResources().getString(R.string.secondPasswordSetError));
                 }
             }
 
@@ -149,13 +150,13 @@ public class SignUpFragment extends Fragment {
         Matcher passwordMatcher = pattern.matcher(binding.passwordEt.getText().toString());
 
         if (!Patterns.EMAIL_ADDRESS.matcher(binding.emailEt.getText().toString()).matches() || binding.emailEt.getText().toString().isEmpty()) {
-            binding.emailIl.setError("Introduce un email válido");
+            binding.emailIl.setError(getResources().getString(R.string.emailSetError));
         } else if (!passwordMatcher.matches()){
-            binding.passwordIl.setError("La contraseña debe tener por lo menos 6 carácteres, una mayúscula y un número.");
+            binding.passwordIl.setError(getResources().getString(R.string.passSetErrorInfo));
         } else if (!binding.password2Et.getText().toString().equals(binding.passwordEt.getText().toString())){
-            binding.password2Il.setError("Las contraseñas no coinciden");
+            binding.password2Il.setError(getResources().getString(R.string.secondPasswordSetError));
         }  else if (!binding.terminosCb.isChecked()) {
-            Snackbar.make(getActivity().findViewById(android.R.id.content), "Debes aceptar nuestros terminos y condiciones.", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(getActivity().findViewById(android.R.id.content), getResources().getString(R.string.termsAndConditionsSnack), Snackbar.LENGTH_LONG).show();
         } else {
             authActivity.signUp(binding.emailEt.getText().toString(), binding.passwordEt.getText().toString());
         }

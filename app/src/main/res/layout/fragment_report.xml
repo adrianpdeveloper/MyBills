@@ -391,7 +391,6 @@
         android:visibility="gone"
         app:backgroundTint="@color/goldPrimary"
         app:fabSize="mini"
-        app:tint="@color/white" />
-
+        app:tint="@color/white"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

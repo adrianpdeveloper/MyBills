@@ -34,6 +34,7 @@ import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.util.Patterns;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -167,6 +168,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             goToReport();
         }
         if (item.getItemId()==R.id.nav_first_2){
+
             goToAuth();
 
         }
@@ -202,7 +204,19 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
     //Ir a activity de registro
     private void goToAuth() {
-        startActivity(new Intent(HomeActivity.this, AuthActivity.class).putExtra("signOut",true));
+        android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(this)
+                .setTitle(getResources().getString(R.string.signOutAlertTitle))
+                .setMessage(getResources().getString(R.string.signOutAlertMessage))
+                .setPositiveButton(getResources().getString(R.string.aceptarString), (dialog, which) -> {
+                    startActivity(new Intent(HomeActivity.this, AuthActivity.class).putExtra("signOut",true));
+                })
+                .setNegativeButton(getResources().getString(R.string.cancelarString), (dialogInterface, i) -> {
+                    dialogInterface.dismiss(); // Cierra el diálogo
+                });
+
+        android.app.AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+
     }
 
     //Infla fragment de resumen
@@ -524,9 +538,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             MaterialButton delete_btn = alertView.findViewById(R.id.delete_btn);
             delete_btn.setOnClickListener(view -> {
                 android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(alertView.getContext())
-                        .setTitle("Borrar Gasto")
+                        .setTitle(getResources().getString(R.string.delete_bill_title))
                         .setMessage(getResources().getString(R.string.delete_bill))
-                        .setPositiveButton("Aceptar", (dialog, which) -> {
+                        .setPositiveButton(getResources().getString(R.string.aceptarString), (dialog, which) -> {
                             //Borrar gasto
                             firestoreBills.deleteBill(newBill.getBillId());
                             dialog.dismiss(); // Cierra el diálogo
@@ -539,7 +553,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                                 throw new RuntimeException(e);
                             }
                         })
-                        .setNegativeButton("Cancelar", (dialogInterface, i) -> {
+                        .setNegativeButton(getResources().getString(R.string.cancelarString), (dialogInterface, i) -> {
                             dialogInterface.dismiss(); // Cierra el diálogo
                         });
 
@@ -556,6 +570,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             ((SummaryFragment) fragment).setBills();
             //Actualiza el Plot
             ((SummaryFragment) fragment).refreshPlot();
+            ((SummaryFragment) fragment).setup();
         }
         if (fragment instanceof TabBillListFragment){
             //Actualiza el recycler segun la posicion del viewPager
@@ -579,7 +594,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private void showDatePicker() {
         MaterialDatePicker datePicker =
                 MaterialDatePicker.Builder.datePicker()
-                        .setTitleText("Selecciona una fecha")
+                        .setTitleText(getResources().getString(R.string.addDatePicker_title))
                         .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
                         .build();
 
@@ -614,21 +629,19 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     //Request de permisos de notificacion
     private ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-                if (isGranted) {
-                    Toast.makeText(this, "Notifications permission granted", Toast.LENGTH_SHORT).show();
-                } else {
-
+                if (!isGranted) {
                     android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(this)
-                            .setTitle("Permisos de notificaciones.")
-                            .setMessage("MyBills requiere de los permisos de notificaciones para poder utilizar todas las funcionalidades.")
-                            .setPositiveButton("Aceptar", (dialog, which) -> {
+                            .setTitle(getResources().getString(R.string.notificationAlert_title))
+                            .setMessage(getResources().getString(R.string.notificationAlert_message))
+                            .setPositiveButton(getResources().getString(R.string.aceptarString), (dialog, which) -> {
                                 Intent settingsIntent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
                                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                                         .putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
                                 startActivity(settingsIntent);
                                 dialog.dismiss();
                             })
-                            .setNegativeButton("Cancelar", (dialogInterface, i) -> dialogInterface.dismiss());
+                            .setNegativeButton(getResources().getString(R.string.cancelarString), (dialogInterface, i) -> dialogInterface.dismiss());
+                    alertDialogBuilder.show();
                 }
             });
 

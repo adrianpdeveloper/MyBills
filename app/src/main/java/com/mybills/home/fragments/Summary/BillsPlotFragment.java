@@ -73,6 +73,8 @@ public class BillsPlotFragment extends Fragment {
                 if (total>0){
                     //Muestra el plot
                     summaryFragment.showPlot();
+                } else {
+                    summaryFragment.hidePlot();
                 }
             }
         }});
